@@ -1,0 +1,11 @@
+{
+  "name": "POMEGRANATE × LILY — Python Atelier",
+  "short_name": "Python Atelier",
+  "description": "A focused browser-based Python practice workspace.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#100b0e",
+  "theme_color": "#160d12"
+}
