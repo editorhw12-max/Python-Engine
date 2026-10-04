@@ -116,19 +116,19 @@ dialog::backdrop{background:#080508c0}dialog h2{font:22px Georgia,serif;margin:0
  .fm{padding:5px 10px}.saved{max-width:42%;overflow:hidden;text-overflow:ellipsis}
  .ph{height:38px;padding:0 10px}.tabs{padding:6px 7px}.foot{padding:0 10px}
  .bot{order:4;padding:6px 2px 3px}
- body.kb .top,body.kb .bar,body.kb .bot,body.kb .views{display:none}
- body.kb .ed .ph,body.kb .ed .tabs,body.kb .ed .fm,body.kb .ed .foot,body.kb .ed .keybar{display:none}
- body.kb .app{padding:0;height:var(--vh);overscroll-behavior:none}
- body.kb .ws{order:1;display:block;height:100%;min-height:0}
- body.kb .panel{height:100%;border:0;border-radius:0;box-shadow:none}
- body.kb .ed{height:100%;min-height:0}
- body.kb .ed .es{height:100%;min-height:0;flex:1}
- body.kb .CodeMirror,body.kb #src{height:100%!important}
- body.kb .CodeMirror-lines{padding-top:10px;padding-bottom:14px}
- body.kb .CodeMirror pre.CodeMirror-line{padding-left:10px;padding-right:10px}
- body.kb .CodeMirror-linenumber{padding-left:4px;padding-right:8px}
+ body.coding .top,body.coding .bar,body.coding .bot,body.coding .views{display:none}
+ body.coding .ed .ph,body.coding .ed .tabs,body.coding .ed .fm,body.coding .ed .foot,body.coding .ed .keybar{display:none}
+ body.coding .app{padding:0;height:var(--vh);overscroll-behavior:none}
+ body.coding .ws{order:1;display:block;height:100%;min-height:0}
+ body.coding .panel{height:100%;border:0;border-radius:0;box-shadow:none}
+ body.coding .ed{height:100%;min-height:0}
+ body.coding .ed .es{height:100%;min-height:0;flex:1}
+ body.coding .CodeMirror,body.coding #src{height:100%!important}
+ body.coding .CodeMirror-lines{padding-top:10px;padding-bottom:14px}
+ body.coding .CodeMirror pre.CodeMirror-line{padding-left:10px;padding-right:10px}
+ body.coding .CodeMirror-linenumber{padding-left:4px;padding-right:8px}
 }
-body.kb .app{overscroll-behavior:none}
+body.coding .app{overscroll-behavior:none}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -313,6 +313,8 @@ const ed={get:()=>cm?cm.getValue():ta.value,focus:()=>cm?cm.focus():ta.focus(),
 function doc(n){return docs[n]||(docs[n]=CodeMirror.Doc(files[n],n.endsWith('.py')?'python':null))}
 function gutter(){const c=ta.value.split('\n').length;if(c!==gutN){gutN=c;$('gut').textContent=Array.from({length:c},(_,i)=>i+1).join('\n')}$('gut').scrollTop=ta.scrollTop}
 function cursor(){let l,c;if(cm){const p=cm.getCursor();l=p.line+1;c=p.ch+1}else{const b=ta.value.slice(0,ta.selectionStart).split('\n');l=b.length;c=b[b.length-1].length+1}$('cur').textContent='Ln '+l+', Col '+c}
+function mobileCoding(on){if(!matchMedia('(max-width:800px)').matches)return;document.body.classList.toggle('coding',!!on);requestAnimationFrame(()=>{if(cm)cm.refresh()})}
+ta.addEventListener('focus',()=>mobileCoding(true));ta.addEventListener('blur',()=>setTimeout(()=>mobileCoding(false),80));
 ta.addEventListener('input',()=>{changed();gutter();cursor()});ta.addEventListener('scroll',gutter);['click','keyup'].forEach(e=>ta.addEventListener(e,cursor));
 ta.addEventListener('keydown',e=>{if(e.isComposing)return;const a=ta.selectionStart,b=ta.selectionEnd;
  const ins=s=>{e.preventDefault();ta.setRangeText(s,a,b,'end');ta.dispatchEvent(new Event('input',{bubbles:true}))};
@@ -420,7 +422,7 @@ function applyPrefs(){document.documentElement.style.setProperty('--fs',prefs.fs
 $('sett').onclick=()=>$('sd').showModal();$('sdc').onclick=()=>$('sd').close();
 $('fd').onclick=()=>{prefs.fs=Math.max(12,prefs.fs-1);applyPrefs();savePrefs()};$('fu').onclick=()=>{prefs.fs=Math.min(24,prefs.fs+1);applyPrefs();savePrefs()};$('clr').onchange=e=>{prefs.clr=e.target.checked;savePrefs()};
 document.addEventListener('keydown',e=>{if(!(e.metaKey||e.ctrlKey))return;if(e.key==='Enter'){e.preventDefault();if(!$('sd').open)run()}else if(e.key.toLowerCase()==='s'){e.preventDefault();persist();toast(saveOK?'Saved on this device. Export for a backup.':'Browser storage is unavailable — use Export.')}},true);
-const vv=window.visualViewport;if(vv){let lastH=0;const f=()=>{const h=Math.round(vv.height);document.documentElement.style.setProperty('--vh',h+'px');const mobile=matchMedia('(max-width:800px)').matches,kb=mobile&&h<innerHeight*.82;document.body.classList.toggle('kb',kb);if(cm&&Math.abs(h-lastH)>24)requestAnimationFrame(()=>cm.refresh());lastH=h};vv.addEventListener('resize',f);vv.addEventListener('scroll',f);f()}
+const vv=window.visualViewport;if(vv){let lastH=0;const f=()=>{const h=Math.round(vv.height);document.documentElement.style.setProperty('--vh',h+'px');if(cm&&Math.abs(h-lastH)>24)requestAnimationFrame(()=>cm.refresh());lastH=h};vv.addEventListener('resize',f);vv.addEventListener('scroll',f);f()}
 window.addEventListener('pagehide',persist);document.addEventListener('visibilitychange',()=>{if(document.hidden)persist()});
 window.addEventListener('beforeunload',e=>{if(!saveOK){e.preventDefault();e.returnValue=''}});
 window.addEventListener('storage',e=>{if(e.key===KEY)toast('Another tab changed your workspace. Reload before editing here to avoid overwriting it.')});
@@ -428,7 +430,7 @@ function loadScript(u){return new Promise((ok,no)=>{const s=document.createEleme
 async function enhance(){try{const b='https://cdn.jsdelivr.net/npm/codemirror@5.65.18/';await loadScript(b+'lib/codemirror.js');await Promise.all([loadScript(b+'mode/python/python.js'),loadScript(b+'addon/edit/matchbrackets.js')]);
  persist();cm=CodeMirror.fromTextArea(ta,{mode:null,lineNumbers:true,indentUnit:4,tabSize:4,indentWithTabs:false,matchBrackets:true,inputStyle:'textarea',viewportMargin:20,screenReaderLabel:'Source code',
   extraKeys:{Tab:c=>c.somethingSelected()?c.indentSelection('add'):c.replaceSelection('    ','end'),'Shift-Tab':c=>c.indentSelection('subtract')}});
- $('gut').hidden=true;cm.on('change',changed);cm.on('cursorActivity',cursor);showFile();applyPrefs()}catch{$('einfo').textContent='Plain editor (no highlighting) · 4 spaces'}}
+ $('gut').hidden=true;cm.on('focus',()=>mobileCoding(true));cm.on('blur',()=>setTimeout(()=>mobileCoding(false),80));cm.on('change',changed);cm.on('cursorActivity',cursor);showFile();applyPrefs()}catch{$('einfo').textContent='Plain editor (no highlighting) · 4 spaces'}}
 showSeal();applyPrefs();showFile();
 if(!iso){$('prep').hidden=false;$('prep').open=true;$('fst').textContent='Runs in your browser · fallback input mode · autosaved on this device'}
 if(!saveOK)setSaved('⚠ NOT saved — browser storage is blocked. Export your files.',true);
