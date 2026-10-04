@@ -116,10 +116,17 @@ dialog::backdrop{background:#080508c0}dialog h2{font:22px Georgia,serif;margin:0
  .fm{padding:5px 10px}.saved{max-width:42%;overflow:hidden;text-overflow:ellipsis}
  .ph{height:38px;padding:0 10px}.tabs{padding:6px 7px}.foot{padding:0 10px}
  .bot{order:4;padding:6px 2px 3px}
- body.kb .top,body.kb .bar,body.kb .bot{display:none}
- body.kb .keybar{display:flex}
- body.kb .views{margin-top:6px}
- body.kb .foot{display:none}
+ body.kb .top,body.kb .bar,body.kb .bot,body.kb .views{display:none}
+ body.kb .ed .ph,body.kb .ed .tabs,body.kb .ed .fm,body.kb .ed .foot,body.kb .ed .keybar{display:none}
+ body.kb .app{padding:0;height:var(--vh);overscroll-behavior:none}
+ body.kb .ws{order:1;display:block;height:100%;min-height:0}
+ body.kb .panel{height:100%;border:0;border-radius:0;box-shadow:none}
+ body.kb .ed{height:100%;min-height:0}
+ body.kb .ed .es{height:100%;min-height:0;flex:1}
+ body.kb .CodeMirror,body.kb #src{height:100%!important}
+ body.kb .CodeMirror-lines{padding-top:10px;padding-bottom:14px}
+ body.kb .CodeMirror pre.CodeMirror-line{padding-left:10px;padding-right:10px}
+ body.kb .CodeMirror-linenumber{padding-left:4px;padding-right:8px}
 }
 body.kb .app{overscroll-behavior:none}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
