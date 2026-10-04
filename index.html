@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
 <meta name="theme-color" content="#160d12">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Python Atelier">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="./manifest.webmanifest">
 <title>POMEGRANATE × LILY — Python Atelier</title>
 <script src="./coi-serviceworker.js"></script>
 <style>
@@ -33,6 +39,8 @@ button:disabled{opacity:.4;cursor:not-allowed}
 h1{margin:0;font:26px/1.2 Georgia,"Times New Roman",serif;letter-spacing:-.6px}
 .tools{display:flex;gap:7px}
 .views{display:none;gap:6px;margin-bottom:8px}.views button{flex:1}.views [aria-pressed=true]{background:#922f4a38;border-color:#b94b6c80}
+.keybar{display:none;align-items:center;gap:6px;overflow-x:auto;overscroll-behavior-x:contain;padding:6px 8px;border-top:1px solid var(--line);background:#120d11;scrollbar-width:none}
+.keybar::-webkit-scrollbar{display:none}.keybar button{flex:0 0 auto;min-width:40px;min-height:36px;padding:5px 9px;border-radius:8px;font:14px var(--mono);background:#ffffff08}
 .ws{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,3fr) minmax(280px,2fr);gap:10px}
 .panel{min-height:0;min-width:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#1b1318,#171116);box-shadow:0 16px 45px #0003}
 .ph{display:flex;align-items:center;justify-content:space-between;gap:8px;height:42px;flex-shrink:0;padding:0 14px;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:2px;color:var(--gold);font-weight:650}
@@ -87,9 +95,33 @@ dialog::backdrop{background:#080508c0}dialog h2{font:22px Georgia,serif;margin:0
 .row{display:flex;gap:8px;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
 *{scrollbar-width:thin;scrollbar-color:#68415088 transparent}
-@media(max-width:800px){.app{padding-left:10px;padding-right:10px}h1,.bn+.sub,.bot span+span{display:none}.bn{font-size:11px;letter-spacing:1.4px}.ws{grid-template-columns:1fr}.views{display:flex}
- .ws[data-v=code] .con,.ws[data-v=console] .ed{display:none}.top{padding:8px 0}.seal{width:38px;height:38px}.cmdrow input,#src{font-size:16px}.tools button{padding:8px 10px}#openb{display:none}}
-body.kb .bot,body.kb .bar .tools button:not(#run):not(#stop){display:none}body.kb .top{display:none}
+@media(max-width:800px){
+ .app{padding-left:8px;padding-right:8px;height:var(--vh)}
+ h1,.bn+.sub,.bot span+span{display:none}
+ .bn{font-size:11px;letter-spacing:1.4px}
+ .top{padding:7px 2px 6px}
+ .seal{width:38px;height:38px}
+ .right{gap:6px}.eng{font-size:11px;max-width:145px;overflow:hidden;text-overflow:ellipsis}
+ .bar{margin-bottom:7px;padding:0 2px}
+ .bar .tools{width:100%;justify-content:flex-end}
+ .bar .tools #run,.bar .tools #stop,#openb{display:none}
+ .tools button{padding:8px 10px;min-height:40px}
+ .ws{order:2;grid-template-columns:1fr;gap:0}
+ .panel{border-radius:12px}
+ .views{order:3;display:grid;grid-template-columns:1fr minmax(104px,1.15fr) 1fr;gap:7px;margin:8px 0 0;padding:6px;border:1px solid var(--line);border-radius:15px;background:#130e12;box-shadow:0 -8px 28px #0003}
+ .views button{min-height:44px;padding:8px 10px;font-weight:650}
+ .views #mrun{box-shadow:none}
+ .ws[data-v=code] .con,.ws[data-v=console] .ed{display:none}
+ .cmdrow{padding:9px 10px}.cmdrow input,#src{font-size:16px}
+ .fm{padding:5px 10px}.saved{max-width:42%;overflow:hidden;text-overflow:ellipsis}
+ .ph{height:38px;padding:0 10px}.tabs{padding:6px 7px}.foot{padding:0 10px}
+ .bot{order:4;padding:6px 2px 3px}
+ body.kb .top,body.kb .bar,body.kb .bot{display:none}
+ body.kb .keybar{display:flex}
+ body.kb .views{margin-top:6px}
+ body.kb .foot{display:none}
+}
+body.kb .app{overscroll-behavior:none}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -103,13 +135,19 @@ body.kb .bot,body.kb .bar .tools button:not(#run):not(#stop){display:none}body.k
 </header>
 <div class="bar"><h1>Make something beautiful.</h1>
  <div class="tools"><button id="openb" title="Import text files">Open</button><button id="exp" title="Download current file">Export</button><button id="run" class="primary" disabled title="Run (Ctrl/⌘ + Enter)">▶ Run</button><button id="stop" class="danger" hidden title="Stop (Ctrl+C in the console)">■ Stop</button></div></div>
-<div class="views" role="group" aria-label="Panel"><button id="vcode" aria-pressed="true">Code</button><button id="vcon" aria-pressed="false">Console</button></div>
+<div class="views" role="group" aria-label="Mobile workspace controls"><button id="vcode" aria-pressed="true">⌨ Code</button><button id="mrun" class="primary" disabled>▶ Run</button><button id="vcon" aria-pressed="false">▤ Console</button></div>
 <main class="ws" id="ws" data-v="code">
  <section class="panel ed" aria-label="Code editor">
   <div class="ph"><span>WORKSPACE</span><span class="i" id="etype">Python</span></div>
   <div class="tabs" id="tabs" role="tablist" aria-label="Files"></div>
   <div class="fm"><label class="vh" for="fname">Filename (Enter to rename)</label><input id="fname" spellcheck="false" autocomplete="off" autocapitalize="off"><span class="saved" id="saved" role="status">Saved on this device</span><button class="tiny" id="del" aria-label="Delete this file">Delete</button></div>
   <div class="es" id="es"><pre class="gut" id="gut" aria-hidden="true">1</pre><textarea id="src" aria-label="Source code" wrap="off" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea></div>
+  <div class="keybar" id="keybar" aria-label="Python coding keys">
+   <button type="button" data-key="    ">Tab</button><button type="button" data-key="(">(</button><button type="button" data-key=")">)</button>
+   <button type="button" data-key=":">:</button><button type="button" data-key="&quot;">"</button><button type="button" data-key="'">'</button>
+   <button type="button" data-key="[">[</button><button type="button" data-key="]">]</button><button type="button" data-key="{">{</button>
+   <button type="button" data-key="}">}</button><button type="button" data-key="#">#</button><button type="button" data-key="_">_</button>
+  </div>
   <div class="foot"><span id="cur">Ln 1, Col 1</span><span id="einfo">4 spaces · UTF-8</span></div>
  </section>
  <section class="panel con" aria-label="Python console">
@@ -272,6 +310,8 @@ ta.addEventListener('input',()=>{changed();gutter();cursor()});ta.addEventListen
 ta.addEventListener('keydown',e=>{if(e.isComposing)return;const a=ta.selectionStart,b=ta.selectionEnd;
  const ins=s=>{e.preventDefault();ta.setRangeText(s,a,b,'end');ta.dispatchEvent(new Event('input',{bubbles:true}))};
  if(e.key==='Tab'&&!e.shiftKey)ins('    ');else if(e.key==='Enter'&&!e.ctrlKey&&!e.metaKey){const ln=ta.value.slice(0,a).split('\n').pop();ins('\n'+ln.match(/^\s*/)[0]+(/:\s*(#.*)?$/.test(ln)?'    ':''))}});
+function insertKey(s){if(cm){cm.replaceSelection(s,'end');cm.focus();return}const a=ta.selectionStart,b=ta.selectionEnd;ta.focus();ta.setRangeText(s,a,b,'end');ta.dispatchEvent(new Event('input',{bubbles:true}))}
+$('keybar').addEventListener('pointerdown',e=>{const b=e.target.closest('button[data-key]');if(!b)return;e.preventDefault();insertKey(b.dataset.key)});
 function showFile(){if(cm){cm.swapDoc(doc(active))}else{ta.value=files[active];gutN=0;gutter()}$('etype').textContent=active.endsWith('.py')?'Python':'Text';tabs();cursor()}
 function switchFile(n){if(n===active)return;persist();active=n;showFile();persist();ed.focus()}
 function tabs(){const b=$('tabs');b.replaceChildren();for(const n in files){const t=document.createElement('button');t.className='tab';t.textContent=n;t.setAttribute('role','tab');t.setAttribute('aria-selected',String(n===active));t.tabIndex=n===active?0:-1;t.onclick=()=>switchFile(n);b.append(t)}
@@ -300,11 +340,12 @@ $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(con.textCont
 const rt={w:null,st:'loading',cur:0,seq:0,synced:new Map(),waiting:false,stopping:false,after:'ready',ver:'',t0:0,first:true};
 const busy=()=>rt.st==='running'||rt.st==='input'||rt.st==='stopping';
 function status(st,label){rt.st=st;$('eng').dataset.s=st;$('engl').textContent=label;sync()}
-function sync(){const b=busy(),s=rt.st;$('run').disabled=!(s==='ready'||s==='stopped'||s==='error');$('run').textContent=s==='error'?'↻ Retry':'▶ Run';$('stop').hidden=!b;
+function sync(){const b=busy(),s=rt.st,can=s==='ready'||s==='stopped'||s==='error';$('run').disabled=!can;$('run').textContent=s==='error'?'↻ Retry':'▶ Run';$('stop').hidden=!b;
+ const mb=$('mrun');if(mb){mb.disabled=!(can||b);mb.textContent=b?'■ Stop':s==='error'?'↻ Retry':'▶ Run';mb.classList.toggle('danger',b)}
  const inp=s==='input';$('cf').dataset.m=inp?'input':'cmd';$('pr').textContent=inp?'⌨':'❯';$('cil').textContent=inp?'Answer for input()':'Console command';
  $('ci').placeholder=inp?'Type your answer · Enter to send · Ctrl+D = end of input':b?'Running… (Ctrl+C to stop)':'Type help for commands';$('ci').disabled=b&&!inp}
 const view=v=>{$('ws').dataset.v=v;$('vcode').setAttribute('aria-pressed',String(v==='code'));$('vcon').setAttribute('aria-pressed',String(v==='console'))};
-$('vcode').onclick=()=>view('code');$('vcon').onclick=()=>view('console');
+$('vcode').onclick=()=>{view('code');setTimeout(()=>ed.focus(),0)};$('vcon').onclick=()=>{view('console');setTimeout(()=>$('ci').focus(),0)};
 function boot(label){
  clearTimeout(rt.grace);clearTimeout(rt.bt);if(rt.w)rt.w.terminate();rt.waiting=false;rt.stopping=false;rt.synced=new Map();rt.cur=++rt.seq;
  status('loading',label||'Starting Python…');
@@ -359,7 +400,7 @@ $('ci').onkeydown=e=>{if(e.ctrlKey&&e.key.toLowerCase()==='c'&&!getSelection().t
  else if(e.ctrlKey&&e.key.toLowerCase()==='d'&&rt.st==='input'){e.preventDefault();answer('',true)}
  else if(rt.st!=='input'&&e.key==='ArrowUp'){e.preventDefault();if(hi===hist.length)draft=e.target.value;if(hi>0)e.target.value=hist[--hi]}
  else if(rt.st!=='input'&&e.key==='ArrowDown'){e.preventDefault();if(hi<hist.length){hi++;e.target.value=hi===hist.length?draft:hist[hi]}}};
-$('run').onclick=()=>run();$('stop').onclick=stop;
+$('run').onclick=()=>run();$('stop').onclick=stop;$('mrun').onclick=()=>busy()?stop():run();
 $('restart').onclick=()=>{if(busy()&&!confirm('Stop the running program and restart Python?'))return;write('\n↻ Restarting Python — variables, runtime files and pip packages are reset. Editor files are untouched.\n','info');boot('Restarting Python…')};
 /* ---------- seal, settings, shortcuts, mobile keyboard, lifecycle ---------- */
 function showSeal(){const b=$('sealb');b.replaceChildren();if(seal){const i=document.createElement('img');i.src=seal;i.alt='Pomegranate × Lily seal';b.append(i)}else{const s=document.createElement('span');s.textContent='P/L';b.append(s)}}
@@ -372,7 +413,7 @@ function applyPrefs(){document.documentElement.style.setProperty('--fs',prefs.fs
 $('sett').onclick=()=>$('sd').showModal();$('sdc').onclick=()=>$('sd').close();
 $('fd').onclick=()=>{prefs.fs=Math.max(12,prefs.fs-1);applyPrefs();savePrefs()};$('fu').onclick=()=>{prefs.fs=Math.min(24,prefs.fs+1);applyPrefs();savePrefs()};$('clr').onchange=e=>{prefs.clr=e.target.checked;savePrefs()};
 document.addEventListener('keydown',e=>{if(!(e.metaKey||e.ctrlKey))return;if(e.key==='Enter'){e.preventDefault();if(!$('sd').open)run()}else if(e.key.toLowerCase()==='s'){e.preventDefault();persist();toast(saveOK?'Saved on this device. Export for a backup.':'Browser storage is unavailable — use Export.')}},true);
-const vv=window.visualViewport;if(vv){const f=()=>{document.documentElement.style.setProperty('--vh',vv.height+'px');document.body.classList.toggle('kb',vv.height<innerHeight*.78&&matchMedia('(max-width:800px)').matches);scrollTo(0,0);if(cm)cm.refresh()};vv.addEventListener('resize',f);vv.addEventListener('scroll',f);f()}
+const vv=window.visualViewport;if(vv){let lastH=0;const f=()=>{const h=Math.round(vv.height);document.documentElement.style.setProperty('--vh',h+'px');const mobile=matchMedia('(max-width:800px)').matches,kb=mobile&&h<innerHeight*.82;document.body.classList.toggle('kb',kb);if(cm&&Math.abs(h-lastH)>24)requestAnimationFrame(()=>cm.refresh());lastH=h};vv.addEventListener('resize',f);vv.addEventListener('scroll',f);f()}
 window.addEventListener('pagehide',persist);document.addEventListener('visibilitychange',()=>{if(document.hidden)persist()});
 window.addEventListener('beforeunload',e=>{if(!saveOK){e.preventDefault();e.returnValue=''}});
 window.addEventListener('storage',e=>{if(e.key===KEY)toast('Another tab changed your workspace. Reload before editing here to avoid overwriting it.')});
