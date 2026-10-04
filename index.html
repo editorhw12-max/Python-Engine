@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="theme-color" content="#160d12">
+<title>POMEGRANATE × LILY — Python Atelier</title>
+<script src="./coi-serviceworker.js"></script>
+<style>
+:root{color-scheme:dark;--bg:#100b0e;--ink:#f3eddf;--mut:#b4a4a7;--gold:#dbb97d;--wine:#922f4a;--leaf:#8db49c;--line:#dbb97d29;--mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;--fs:15px;--vh:100dvh}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
+button,input,textarea,summary{font:inherit;color:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:#ffffff08;border-radius:10px;padding:8px 13px;transition:background .18s,border-color .18s,transform .18s;touch-action:manipulation}
+button:hover:not(:disabled){background:#dbb97d1a;border-color:#dbb97d70}button:active:not(:disabled){transform:translateY(1px)}
+button:disabled{opacity:.4;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.primary{background:linear-gradient(135deg,#b3405c,#79243b);border-color:#bd596d;font-weight:650;box-shadow:0 4px 20px #8c2c4440}
+.danger{color:#f5a8b7}.tiny{font-size:12px;padding:5px 9px;border-radius:8px}.quiet{background:transparent}
+.app{height:var(--vh);display:flex;flex-direction:column;padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(16px,env(safe-area-inset-left));background:radial-gradient(ellipse at 15% 0,#651b3040,transparent 55%),radial-gradient(ellipse at 100% 100%,#21452e2a,transparent 45%)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 10px;flex-shrink:0}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.seal{width:44px;height:44px;flex-shrink:0;border-radius:50%;border:1px solid var(--gold);padding:0;overflow:hidden;background:#23151a;color:var(--gold);font:18px Georgia,serif;letter-spacing:-2px;box-shadow:inset 0 0 0 4px #110d10}
+.seal img{width:100%;height:100%;object-fit:contain;display:block}
+.bn{font-weight:600;font-size:13px;letter-spacing:2.2px}.sub{font-size:10px;letter-spacing:2.8px;text-transform:uppercase;color:var(--gold)}
+.right{display:flex;align-items:center;gap:8px}
+.eng{display:flex;gap:7px;align-items:center;font-size:12px;color:var(--mut);white-space:nowrap}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}
+[data-s=ready] .dot{background:var(--leaf)}[data-s=error] .dot{background:#fa8b9f}[data-s=stopped] .dot{background:#8c7a80}[data-s=input] .dot{background:var(--leaf);box-shadow:0 0 0 4px #8db49c30}
+[data-s=loading] .dot,[data-s=running] .dot,[data-s=stopping] .dot{animation:pulse 1.2s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-shrink:0}
+h1{margin:0;font:26px/1.2 Georgia,"Times New Roman",serif;letter-spacing:-.6px}
+.tools{display:flex;gap:7px}
+.views{display:none;gap:6px;margin-bottom:8px}.views button{flex:1}.views [aria-pressed=true]{background:#922f4a38;border-color:#b94b6c80}
+.ws{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,3fr) minmax(280px,2fr);gap:10px}
+.panel{min-height:0;min-width:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#1b1318,#171116);box-shadow:0 16px 45px #0003}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:8px;height:42px;flex-shrink:0;padding:0 14px;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:2px;color:var(--gold);font-weight:650}
+.ph span.i{font:11px var(--mono);letter-spacing:0;color:var(--mut);font-weight:400}
+.tabs{display:flex;gap:4px;padding:7px 9px;overflow:auto;flex-shrink:0;border-bottom:1px solid var(--line);background:#120d11}
+.tab{white-space:nowrap;border-color:transparent;color:var(--mut);font:12px var(--mono);padding:6px 11px;border-radius:8px}
+.tab[aria-selected=true]{background:#922f4a28;border-color:#b94b6c55;color:#f4d6dc}
+.fm{display:flex;align-items:center;gap:8px;padding:6px 14px;flex-shrink:0}
+.fm input{flex:1;min-width:0;border:0;background:transparent;font:12px var(--mono);padding:4px 0}
+.saved{font-size:11px;color:var(--leaf);white-space:nowrap}.saved.warn{color:#ffc27a}
+.es{flex:1;min-height:0;position:relative;display:flex;background:#171116}
+.gut{width:46px;flex-shrink:0;margin:0;padding:14px 8px 14px 0;text-align:right;overflow:hidden;background:#130e11;color:#7b6470;font:var(--fs)/1.6 var(--mono);user-select:none}
+#src{flex:1;min-width:0;resize:none;border:0;outline:0;padding:14px;margin:0;background:#171116;font:var(--fs)/1.6 var(--mono);tab-size:4;white-space:pre;overflow:auto}
+.CodeMirror{height:100%;width:100%;font:var(--fs)/1.6 var(--mono);color:var(--ink);background:#171116;position:relative;overflow:hidden;direction:ltr}
+.CodeMirror-scroll{overflow:scroll!important;margin-bottom:-50px;margin-right:-50px;padding-bottom:50px;height:100%;outline:0;position:relative}
+.CodeMirror-sizer{position:relative;border-right:50px solid transparent}
+.CodeMirror-vscrollbar,.CodeMirror-hscrollbar,.CodeMirror-scrollbar-filler,.CodeMirror-gutter-filler{position:absolute;z-index:6;display:none}
+.CodeMirror-gutters{position:absolute;left:0;top:0;min-height:100%;z-index:3;background:#130e11;border-right:1px solid #dbb97d12}
+.CodeMirror-gutter{white-space:normal;height:100%;display:inline-block;vertical-align:top;margin-bottom:-50px}
+.CodeMirror-gutter-wrapper{position:absolute;z-index:4;background:0 0!important;border:0!important}
+.CodeMirror-gutter-elt{position:absolute;cursor:default;z-index:4}
+.CodeMirror-linenumber{padding:0 10px 0 7px;min-width:28px;text-align:right;color:#7b6470;white-space:nowrap}
+.CodeMirror-lines{padding:14px 0;cursor:text;min-height:1px}
+.CodeMirror pre.CodeMirror-line{padding:0 14px;margin:0;border:0;background:0 0;font:inherit;white-space:pre;word-wrap:normal;color:inherit;position:relative;z-index:2;overflow:visible}
+.CodeMirror-wrap pre.CodeMirror-line{white-space:pre-wrap;word-break:normal}
+.CodeMirror-scroll,.CodeMirror-sizer,.CodeMirror-gutter,.CodeMirror-gutters,.CodeMirror-linenumber{box-sizing:content-box}
+.CodeMirror-code{outline:0}.CodeMirror-code>div{position:relative}
+.CodeMirror-measure{position:absolute;width:100%;height:0;overflow:hidden;visibility:hidden}.CodeMirror-measure pre{position:static}
+div.CodeMirror-cursors{visibility:hidden;position:relative;z-index:3}.CodeMirror-focused div.CodeMirror-cursors{visibility:visible}
+.CodeMirror-cursor{position:absolute;pointer-events:none;border-left:2px solid var(--gold);width:0}
+.CodeMirror-selected{background:#8e3c5c50}.CodeMirror-matchingbracket{color:var(--gold)!important;background:#dbb97d1c}
+.CodeMirror-linebackground{position:absolute;inset:0;z-index:0}.cm-err{background:#d9446a30}
+.cm-keyword{color:#ef93b0}.cm-atom,.cm-number{color:#deb980}.cm-def{color:#f1d6b3}.cm-variable{color:#eee4db}.cm-variable-2,.cm-property{color:#b5c9d8}.cm-variable-3{color:#c6b2df}.cm-operator{color:#d6bac7}.cm-comment{color:#a08492;font-style:italic}.cm-string,.cm-string-2{color:#a5c9a6}.cm-meta,.cm-builtin{color:#dfc1a2}.cm-error{color:#ff9aae}
+.foot{height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-top:1px solid var(--line);font:10px var(--mono);color:var(--mut);flex-shrink:0}
+.con{background:#110d10}
+#out{flex:1;min-height:80px;margin:0;padding:14px;overflow:auto;overscroll-behavior:contain;font:13px/1.7 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;tab-size:4}
+#out .info{color:#a996a0}#out .cmd{color:var(--gold)}#out .err{color:#f4a4b5}#out .ok{color:var(--leaf)}#out .in{color:var(--gold);font-weight:600}
+#out button.jump{display:block;margin:6px 0;font:12px var(--mono);color:var(--gold)}
+details{border-top:1px solid var(--line);background:#151013}summary{cursor:pointer;color:var(--mut);padding:8px 14px;font-size:11px}
+details p{margin:0 14px 6px;color:var(--mut);font-size:11px}
+details textarea{display:block;width:calc(100% - 28px);height:64px;margin:0 14px 10px;resize:vertical;background:#0e0a0d;border:1px solid var(--line);border-radius:8px;padding:8px;font:12px/1.5 var(--mono)}
+.cmdrow{display:flex;align-items:center;gap:9px;padding:10px 13px;border-top:1px solid var(--line);background:#1a1116;flex-shrink:0}
+.cmdrow[data-m=input]{background:#1d1a14;box-shadow:inset 0 2px 0 var(--leaf)}
+.pr{color:var(--gold);font:17px var(--mono)}
+.cmdrow input{flex:1;min-width:0;padding:6px 0;background:transparent;border:0;outline:0;font:13px var(--mono)}
+.cmdrow input::placeholder{color:#84707c}
+.bot{display:flex;justify-content:space-between;padding:8px 2px 10px;color:#99818c;font-size:10px;flex-shrink:0}
+.toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));left:50%;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:#30212a;border:1px solid var(--line);border-radius:12px;padding:10px 18px;z-index:30;font-size:13px;transition:opacity .2s,transform .2s;max-width:90vw}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+dialog{background:#21171d;color:var(--ink);border:1px solid #dbb97d40;border-radius:18px;width:min(440px,calc(100% - 32px));padding:22px}
+dialog::backdrop{background:#080508c0}dialog h2{font:22px Georgia,serif;margin:0 0 12px}dialog p,dialog li{color:var(--mut);font-size:13px}
+.row{display:flex;gap:8px;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+*{scrollbar-width:thin;scrollbar-color:#68415088 transparent}
+@media(max-width:800px){.app{padding-left:10px;padding-right:10px}h1,.bn+.sub,.bot span+span{display:none}.bn{font-size:11px;letter-spacing:1.4px}.ws{grid-template-columns:1fr}.views{display:flex}
+ .ws[data-v=code] .con,.ws[data-v=console] .ed{display:none}.top{padding:8px 0}.seal{width:38px;height:38px}.cmdrow input,#src{font-size:16px}.tools button{padding:8px 10px}#openb{display:none}}
+body.kb .bot,body.kb .bar .tools button:not(#run):not(#stop){display:none}body.kb .top{display:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top">
+ <div class="brand"><button class="seal" id="sealb" aria-label="Upload your brand seal" title="Upload your Pomegranate × Lily seal"><span>P/L</span></button>
+ <div><div class="bn">POMEGRANATE × LILY</div><div class="sub">Python atelier</div></div></div>
+ <div class="right"><div class="eng" id="eng" data-s="loading" role="status" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="engl">Starting Python…</span></div>
+ <button class="tiny" id="restart" title="Restart Python: clears variables, runtime files and pip packages; editor files are kept">Restart</button><button class="tiny" id="sett" aria-label="Settings">⚙</button></div>
+</header>
+<div class="bar"><h1>Make something beautiful.</h1>
+ <div class="tools"><button id="openb" title="Import text files">Open</button><button id="exp" title="Download current file">Export</button><button id="run" class="primary" disabled title="Run (Ctrl/⌘ + Enter)">▶ Run</button><button id="stop" class="danger" hidden title="Stop (Ctrl+C in the console)">■ Stop</button></div></div>
+<div class="views" role="group" aria-label="Panel"><button id="vcode" aria-pressed="true">Code</button><button id="vcon" aria-pressed="false">Console</button></div>
+<main class="ws" id="ws" data-v="code">
+ <section class="panel ed" aria-label="Code editor">
+  <div class="ph"><span>WORKSPACE</span><span class="i" id="etype">Python</span></div>
+  <div class="tabs" id="tabs" role="tablist" aria-label="Files"></div>
+  <div class="fm"><label class="vh" for="fname">Filename (Enter to rename)</label><input id="fname" spellcheck="false" autocomplete="off" autocapitalize="off"><span class="saved" id="saved" role="status">Saved on this device</span><button class="tiny" id="del" aria-label="Delete this file">Delete</button></div>
+  <div class="es" id="es"><pre class="gut" id="gut" aria-hidden="true">1</pre><textarea id="src" aria-label="Source code" wrap="off" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea></div>
+  <div class="foot"><span id="cur">Ln 1, Col 1</span><span id="einfo">4 spaces · UTF-8</span></div>
+ </section>
+ <section class="panel con" aria-label="Python console">
+  <div class="ph"><span>CONSOLE</span><span><span class="i" id="rt"></span> <button class="tiny quiet" id="copy">Copy</button> <button class="tiny quiet" id="clear">Clear</button></span></div>
+  <pre id="out" tabindex="0" role="log" aria-label="Console output"></pre>
+  <details id="prep" hidden><summary>Prepared answers for input() (fallback mode)</summary><p>One answer per line. Used because live typing needs the local server (see Help).</p><textarea id="prept" aria-label="Prepared input lines" spellcheck="false"></textarea></details>
+  <form class="cmdrow" id="cf" data-m="cmd"><span class="pr" id="pr" aria-hidden="true">❯</span><label class="vh" for="ci" id="cil">Console command</label><input id="ci" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type help for commands"><button type="submit" class="tiny quiet" aria-label="Send">↵</button></form>
+ </section>
+</main>
+<footer class="bot"><span id="fst">Runs in your browser · autosaved on this device</span><span>Run ⌘/Ctrl+↵ · Save ⌘/Ctrl+S · Stop Ctrl+C in console</span></footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" id="filef" multiple accept=".py,.txt,.json,.csv,.md,.yaml,.yml,.toml,.ini" hidden>
+<input type="file" id="sealf" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+<dialog id="sd"><h2>Your atelier.</h2>
+ <div class="row"><span>Font size</span><span><button class="tiny" id="fd" aria-label="Smaller">−</button> <span id="fv">15px</span> <button class="tiny" id="fu" aria-label="Larger">＋</button></span></div>
+ <div class="row"><span>Clear console on each run</span><input type="checkbox" id="clr" aria-label="Clear console on each run"></div>
+ <div class="row"><span>Brand seal</span><span><button class="tiny" id="su">Upload</button> <button class="tiny" id="sr">Remove</button></span></div>
+ <h2 style="margin-top:18px">Help</h2>
+ <ul><li><b>Live input():</b> on GitHub Pages, <code>coi-serviceworker.js</code> enables the browser isolation required for terminal input. The first visit may reload once automatically. If isolation is unavailable (for example, in some private-browsing modes), the Prepared answers fallback appears instead.</li>
+ <li><b>Stop:</b> normally interrupts the running program and keeps Python state. If the browser cannot provide cross-origin isolation, Stop safely restarts Python instead.</li>
+ <li><b>Reset on restart:</b> variables, files your programs create, and pip packages are cleared. Editor files are never touched.</li></ul>
+ <div style="text-align:right;margin-top:14px"><button id="sdc">Done</button></div></dialog>
+<script type="text/plain" id="wsrc">
+let py,runFile,ctl,data,intr,interactive=false,queue=[],seg=[],n=0,cap=0,last=0,cancelled=false,runId=0,busy=false;
+const dec=new TextDecoder(),LIM=300000;
+const post=(t,o={})=>postMessage({type:t,runId,...o});
+function flush(){if(seg.length){post('out',{seg});seg=[];n=0}last=performance.now()}
+function out(t,k){if(!t)return;if(cap>=LIM){if(cap===LIM){flush();post('out',{seg:[{t:'\n[Output limit reached; the rest of this run is not shown.]\n',k:'info'}]});cap++}return}
+ t=t.slice(0,LIM-cap);cap+=t.length;const l=seg[seg.length-1];if(l&&l.k===k)l.t+=t;else seg.push({t,k});n+=t.length;if(n>4000||performance.now()-last>60)flush()}
+onmessage=async({data:m})=>{
+ if(m.type==='init'){try{
+  if(m.ctl){ctl=new Int32Array(m.ctl);data=new Uint8Array(m.data);intr=new Int32Array(m.intr);interactive=true}
+  const {loadPyodide}=await import(m.cdn+'pyodide.mjs');py=await loadPyodide({indexURL:m.cdn});
+  py.FS.mkdirTree('/workspace');py.FS.chdir('/workspace');if(intr)py.setInterruptBuffer(intr);
+  py.registerJsModule('pl_bridge',{write:(k,t)=>out(t,k),interactive:()=>interactive,cancelled:()=>cancelled,
+   read_line(){flush();
+    if(!interactive){if(queue.length){const l=queue.shift();out(l+'\n','in');return l}return null}
+    Atomics.store(ctl,0,1);post('need-input');
+    while(Atomics.load(ctl,0)===1)Atomics.wait(ctl,0,1);
+    const s=Atomics.load(ctl,0),len=Atomics.load(ctl,1);Atomics.store(ctl,0,0);
+    if(s===3){cancelled=true;return null}if(len<0)return null;
+    const c=new Uint8Array(len);c.set(data.subarray(0,len));return dec.decode(c)}});
+  py.runPython(m.py);runFile=py.globals.get('run_file');
+  postMessage({type:'ready',runId:0,v:py.runPython('import sys\nsys.version.split()[0]')});
+ }catch(e){postMessage({type:'fatal',runId:0,message:String(e&&e.message||e)})}return}
+ if(!py||busy)return;busy=true;runId=m.runId;cancelled=false;cap=0;queue=m.queue||[];const t0=performance.now();let st='ok';
+ try{
+  for(const f of m.removed)try{py.FS.unlink('/workspace/'+f)}catch{}
+  for(const k in m.files)py.FS.writeFile('/workspace/'+k,m.files[k]);
+  if(m.type==='run'){
+   post('progress',{label:'Loading packages…'});
+   try{await py.loadPackagesFromImports(m.imports)}catch(e){out('Package load problem: '+e.message+'\n','err')}
+   post('progress',{label:'Running Python'});st=runFile(m.file,JSON.stringify(m.args));
+  }else if(m.op==='ls'){
+   const rows=py.FS.readdir('/workspace').filter(f=>f!=='.'&&f!=='..').sort().map(f=>{const s=py.FS.stat('/workspace/'+f);return (py.FS.isDir(s.mode)?f+'/':f)+'  '+s.size+' B'+(m.names.includes(f)?'':'  (runtime only)')});
+   out((rows.join('\n')||'(empty)')+'\n','out');
+  }else if(m.op==='cat'){
+   if(/[\/\\]/.test(m.arg))throw Error('Use a plain filename.');
+   const t=py.FS.readFile('/workspace/'+m.arg,{encoding:'utf8'});out(t.slice(0,100000)+(t.endsWith('\n')?'':'\n'),'out');
+  }else if(m.op==='pip'){
+   post('progress',{label:'Installing packages…'});py.globals.set('_pk',m.args.join(' '));
+   await py.loadPackage('micropip');await py.runPythonAsync('import micropip\nawait micropip.install(_pk.split())');out('Installed: '+m.args.join(' ')+' (cleared when Python restarts)\n','ok');
+  }
+ }catch(e){out(String(e&&e.message||e)+'\n','err');st='error'}
+ flush();busy=false;post('done',{st,ms:performance.now()-t0});
+};
+</script>
+<script type="text/plain" id="psrc">
+import sys, io, builtins, traceback, importlib, linecache, types, os, json, atexit
+import pl_bridge as B
+sys.dont_write_bytecode = True
+class _W(io.RawIOBase):
+    def __init__(s, k): s.k = k
+    def writable(s): return True
+    def write(s, b):
+        B.write(s.k, bytes(b).decode('utf-8', 'replace')); return len(b)
+class _In(io.TextIOBase):
+    def readable(s): return True
+    def readline(s, size=-1):
+        l = B.read_line()
+        return '' if l is None else l + '\n'
+OUT = io.TextIOWrapper(_W('out'), encoding='utf-8', errors='backslashreplace', write_through=True)
+ERR = io.TextIOWrapper(_W('err'), encoding='utf-8', errors='backslashreplace', write_through=True)
+IN = _In()
+def _input(prompt=''):
+    if prompt != '': sys.stdout.write(str(prompt))
+    sys.stdout.flush()
+    l = B.read_line()
+    if l is None:
+        if B.cancelled(): raise KeyboardInterrupt
+        raise EOFError('EOF when reading a line' if B.interactive() else
+            'input() needs an answer but no prepared answers are left (add lines under "Prepared answers", or use serve.py for live typing).')
+    return l
+def run_file(name, args_json):
+    path = '/workspace/' + name
+    sys.stdout, sys.stderr, sys.stdin, builtins.input = OUT, ERR, IN, _input
+    sys.argv = [name] + json.loads(args_json)
+    os.chdir('/workspace')
+    if '/workspace' not in sys.path: sys.path.insert(0, '/workspace')
+    for k, m in list(sys.modules.items()):
+        f = getattr(m, '__file__', None)
+        if isinstance(f, str) and f.startswith('/workspace/'): del sys.modules[k]
+    importlib.invalidate_caches(); linecache.clearcache()
+    main = types.ModuleType('__main__'); main.__file__ = path
+    old = sys.modules.get('__main__'); sys.modules['__main__'] = main
+    status = 'ok'
+    try:
+        with open(path, encoding='utf-8') as f: code = compile(f.read(), path, 'exec')
+        exec(code, main.__dict__)
+    except SystemExit as e:
+        if e.code not in (None, 0):
+            ERR.write('Program exited with status %s\n' % e.code if isinstance(e.code, int) else '%s\n' % e.code)
+            status = 'error'
+    except BaseException as e:
+        status = 'error'
+        tb = e.__traceback__.tb_next if e.__traceback__ else None
+        te = traceback.TracebackException(type(e), e, tb)
+        te.stack = traceback.StackSummary.from_list([f for f in te.stack if f.filename != run_file.__code__.co_filename])
+        ERR.write(''.join(te.format()).replace('File "/workspace/', 'File "'))
+        if isinstance(e, ModuleNotFoundError) and e.name:
+            ERR.write('Hint: "%s" is not a built-in module. If it is a pure-Python package, type  pip install %s  in the console, then Run again.\n' % (e.name, e.name.split('.')[0]))
+    finally:
+        try: atexit._run_exitfuncs()
+        except BaseException: pass
+        if old is not None: sys.modules['__main__'] = old
+    return status
+</script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const KEY='pl.atelier.v2',OLD='pl.atelier.v1',SK='pl.atelier.v2.seal',HK='pl.atelier.v2.hist',PK='pl.atelier.v2.prefs';
+const CDN='https://cdn.jsdelivr.net/pyodide/v314.0.7/full/';
+const iso=self.crossOriginIsolated===true&&typeof SharedArrayBuffer==='function';
+const store={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v);return true}catch{return false}}};
+const okName=n=>typeof n==='string'&&n&&n.length<=100&&n!=='.'&&n!=='..'&&!/[\/\\\x00-\x1f\x7f]/.test(n);
+const starter='# POMEGRANATE × LILY\n# Your code. Your craft.\n\nname = input("What is your name? ")\nprint(f"Hello, {name}.")\n';
+let files=Object.create(null),active='',seal=store.get(SK)||'',prefs={fs:15,clr:false},saveOK=true,timer=0,cm=null,docs=Object.create(null),hist=[],hi=0,draft='',errText='';
+(function load(){let s=null;try{s=JSON.parse(store.get(KEY)||store.get(OLD)||'null')}catch{}
+ if(s&&s.files&&typeof s.files==='object')for(const[n,t]of Object.entries(s.files))if(okName(n)&&typeof t==='string')files[n]=t;
+ if(!Object.keys(files).length)files['hello.py']=starter;
+ active=files[s&&s.active]!==undefined?s.active:Object.keys(files)[0];
+ if(!seal&&s&&/^data:image\//.test(s.seal||''))seal=s.seal;
+ try{prefs={...prefs,...JSON.parse(store.get(PK)||'{}')}}catch{}try{hist=JSON.parse(store.get(HK)||'[]').filter(x=>typeof x==='string').slice(-100)}catch{}hi=hist.length;
+ if(store.get(KEY)===null&&!store.set(KEY,JSON.stringify({files,active}))){saveOK=false}})();
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),3000)}
+function setSaved(m,warn){$('saved').textContent=m;$('saved').classList.toggle('warn',!!warn)}
+function persist(){clearTimeout(timer);files[active]=ed.get();saveOK=store.set(KEY,JSON.stringify({files,active}));
+ setSaved(saveOK?'Saved on this device':'⚠ NOT saved — storage blocked or full. Export your files.',!saveOK)}
+function changed(){files[active]=ed.get();setSaved('Saving…',true);clearTimeout(timer);timer=setTimeout(persist,400);if(cm)cm.eachLine(l=>cm.removeLineClass(l,'background','cm-err'))}
+function savePrefs(){store.set(PK,JSON.stringify(prefs))}
+/* ---------- editor (CodeMirror when available, textarea otherwise; every edit path ends in changed()) ---------- */
+const ta=$('src');let gutN=0;
+const ed={get:()=>cm?cm.getValue():ta.value,focus:()=>cm?cm.focus():ta.focus(),
+ goto(line){if(cm){cm.setCursor(line-1,0);cm.addLineClass(line-1,'background','cm-err');cm.scrollIntoView({line:line-1,ch:0},80);cm.focus()}else{const i=ta.value.split('\n').slice(0,line-1).join('\n').length+(line>1?1:0);ta.focus();ta.setSelectionRange(i,i)}}};
+function doc(n){return docs[n]||(docs[n]=CodeMirror.Doc(files[n],n.endsWith('.py')?'python':null))}
+function gutter(){const c=ta.value.split('\n').length;if(c!==gutN){gutN=c;$('gut').textContent=Array.from({length:c},(_,i)=>i+1).join('\n')}$('gut').scrollTop=ta.scrollTop}
+function cursor(){let l,c;if(cm){const p=cm.getCursor();l=p.line+1;c=p.ch+1}else{const b=ta.value.slice(0,ta.selectionStart).split('\n');l=b.length;c=b[b.length-1].length+1}$('cur').textContent='Ln '+l+', Col '+c}
+ta.addEventListener('input',()=>{changed();gutter();cursor()});ta.addEventListener('scroll',gutter);['click','keyup'].forEach(e=>ta.addEventListener(e,cursor));
+ta.addEventListener('keydown',e=>{if(e.isComposing)return;const a=ta.selectionStart,b=ta.selectionEnd;
+ const ins=s=>{e.preventDefault();ta.setRangeText(s,a,b,'end');ta.dispatchEvent(new Event('input',{bubbles:true}))};
+ if(e.key==='Tab'&&!e.shiftKey)ins('    ');else if(e.key==='Enter'&&!e.ctrlKey&&!e.metaKey){const ln=ta.value.slice(0,a).split('\n').pop();ins('\n'+ln.match(/^\s*/)[0]+(/:\s*(#.*)?$/.test(ln)?'    ':''))}});
+function showFile(){if(cm){cm.swapDoc(doc(active))}else{ta.value=files[active];gutN=0;gutter()}$('etype').textContent=active.endsWith('.py')?'Python':'Text';tabs();cursor()}
+function switchFile(n){if(n===active)return;persist();active=n;showFile();persist();ed.focus()}
+function tabs(){const b=$('tabs');b.replaceChildren();for(const n in files){const t=document.createElement('button');t.className='tab';t.textContent=n;t.setAttribute('role','tab');t.setAttribute('aria-selected',String(n===active));t.tabIndex=n===active?0:-1;t.onclick=()=>switchFile(n);b.append(t)}
+ const add=document.createElement('button');add.className='tab';add.textContent='＋';add.setAttribute('aria-label','New file');add.onclick=newFile;b.append(add);
+ $('fname').value=active;const s=b.querySelector('[aria-selected=true]');if(s)s.scrollIntoView({block:'nearest',inline:'nearest'});sync()}
+$('tabs').addEventListener('keydown',e=>{const k=Object.keys(files),i=k.indexOf(active);const j={ArrowRight:i+1,ArrowLeft:i-1,Home:0,End:k.length-1}[e.key];if(j===undefined)return;e.preventDefault();switchFile(k[(j+k.length)%k.length]);$('tabs').querySelector('[aria-selected=true]').focus()});
+function newFile(){let n='untitled.py',i=2;while(n in files)n='untitled_'+i+++'.py';persist();files[n]='';active=n;showFile();persist();$('fname').focus();$('fname').select();toast('Name your file, then press Enter')}
+function rename(){const n=$('fname').value.trim();if(n===active)return;if(!okName(n)){toast('Use a filename without slashes.');$('fname').value=active;return}if(n in files){toast('That name is taken.');$('fname').value=active;return}
+ persist();files[n]=files[active];delete files[active];if(docs[active]){docs[n]=docs[active];delete docs[active];if(cm)cm.setOption('mode',n.endsWith('.py')?'python':null)}active=n;persist();tabs();$('etype').textContent=n.endsWith('.py')?'Python':'Text';toast('Renamed. Python sees the new name on the next run.')}
+$('fname').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();rename();ed.focus()}else if(e.key==='Escape'){e.target.value=active;ed.focus()}};$('fname').onblur=rename;
+$('del').onclick=()=>{if(!confirm('Delete "'+active+'" from your editor files? This cannot be undone.'))return;delete files[active];delete docs[active];if(!Object.keys(files).length)files['main.py']='';active=Object.keys(files)[0];showFile();persist()};
+$('openb').onclick=()=>$('filef').click();
+$('filef').onchange=async e=>{let last=null,c=0;for(const f of e.target.files){if(!okName(f.name)||f.size>2e6){toast('Skipped '+f.name+' (bad name or over 2 MB).');continue}let n=f.name,i=2;while(n in files){const d=f.name.lastIndexOf('.');n=(d>0?f.name.slice(0,d):f.name)+'_'+i+++(d>0?f.name.slice(d):'')}
+ try{files[n]=await f.text();last=n;c++}catch{toast('Could not read '+f.name)}}e.target.value='';if(last){persist();active=last;showFile();persist();toast(c+' file'+(c>1?'s':'')+' imported')}};
+$('exp').onclick=()=>{persist();const u=URL.createObjectURL(new Blob([files[active]],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=u;a.download=active;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);toast('Exported '+active)};
+/* ---------- console ---------- */
+const con=$('out');let pend=[],raf=0,clen=0;
+function write(t,k='out'){if(!t)return;pend.push([t,k]);if(!raf)raf=requestAnimationFrame(drain)}
+function drain(){raf=0;const stick=con.scrollHeight-con.scrollTop-con.clientHeight<60;
+ for(const[t,k]of pend){const s=con.lastChild;if(s&&s.dataset&&s.dataset.k===k)s.firstChild.appendData(t);else{const e=document.createElement('span');e.dataset.k=k;e.className=k;e.textContent=t;con.append(e)}clen+=t.length}pend=[];
+ while(clen>200000&&con.firstChild!==con.lastChild){clen-=con.firstChild.textContent.length;con.firstChild.remove()}if(stick)con.scrollTop=con.scrollHeight}
+function clearCon(){pend=[];con.replaceChildren();clen=0}
+$('clear').onclick=clearCon;
+$('copy').onclick=async()=>{try{await navigator.clipboard.writeText(con.textContent);toast('Console copied')}catch{const r=document.createRange();r.selectNodeContents(con);const s=getSelection();s.removeAllRanges();s.addRange(r);toast('Selected — use your device’s Copy')}};
+/* ---------- Python runtime lifecycle ---------- */
+const rt={w:null,st:'loading',cur:0,seq:0,synced:new Map(),waiting:false,stopping:false,after:'ready',ver:'',t0:0,first:true};
+const busy=()=>rt.st==='running'||rt.st==='input'||rt.st==='stopping';
+function status(st,label){rt.st=st;$('eng').dataset.s=st;$('engl').textContent=label;sync()}
+function sync(){const b=busy(),s=rt.st;$('run').disabled=!(s==='ready'||s==='stopped'||s==='error');$('run').textContent=s==='error'?'↻ Retry':'▶ Run';$('stop').hidden=!b;
+ const inp=s==='input';$('cf').dataset.m=inp?'input':'cmd';$('pr').textContent=inp?'⌨':'❯';$('cil').textContent=inp?'Answer for input()':'Console command';
+ $('ci').placeholder=inp?'Type your answer · Enter to send · Ctrl+D = end of input':b?'Running… (Ctrl+C to stop)':'Type help for commands';$('ci').disabled=b&&!inp}
+const view=v=>{$('ws').dataset.v=v;$('vcode').setAttribute('aria-pressed',String(v==='code'));$('vcon').setAttribute('aria-pressed',String(v==='console'))};
+$('vcode').onclick=()=>view('code');$('vcon').onclick=()=>view('console');
+function boot(label){
+ clearTimeout(rt.grace);clearTimeout(rt.bt);if(rt.w)rt.w.terminate();rt.waiting=false;rt.stopping=false;rt.synced=new Map();rt.cur=++rt.seq;
+ status('loading',label||'Starting Python…');
+ let w;try{const u=URL.createObjectURL(new Blob([$('wsrc').textContent],{type:'text/javascript'}));w=new Worker(u,{type:'module'});setTimeout(()=>URL.revokeObjectURL(u),10000)}catch(e){status('error','Python unavailable');write('Could not start the Python worker: '+e.message+'\n','err');return}
+ rt.w=w;if(iso){rt.ctl=new Int32Array(new SharedArrayBuffer(8));rt.data=new Uint8Array(new SharedArrayBuffer(65536));rt.intr=new Int32Array(new SharedArrayBuffer(4))}
+ const fail=m=>{if(rt.w!==w)return;clearTimeout(rt.bt);w.terminate();status('error','Python failed to load');write(m+'\nCheck your connection, then press Retry. The editor still works and your files are safe.\n','err')};
+ rt.bt=setTimeout(()=>fail('Python startup timed out.'),120000);setTimeout(()=>{if(rt.w===w&&rt.st==='loading')$('engl').textContent='Still loading (first load ~10 MB)…'},8000);
+ w.onerror=e=>{e.preventDefault();fail(e.message||'Worker failed to start.')};
+ w.onmessage=({data:m})=>{if(rt.w!==w)return;onMsg(m)};
+ w.postMessage({type:'init',cdn:CDN,py:$('psrc').textContent,ctl:rt.ctl&&rt.ctl.buffer,data:rt.data&&rt.data.buffer,intr:rt.intr&&rt.intr.buffer})}
+function onMsg(m){
+ if(m.type==='ready'){clearTimeout(rt.bt);rt.ver=m.v;const s=rt.after;rt.after='ready';status(s,s==='stopped'?'Stopped · Python '+m.v+' ready':'Ready · Python '+m.v);
+  if(rt.first){rt.first=false;write('POMEGRANATE × LILY / PYTHON ATELIER\n','cmd');write(iso?'Ready. Press Run — input() prompts appear here and you answer in the box below.\n\n':'Ready in fallback input mode. Live terminal input is unavailable in this browser session — see ⚙ Help.\n\n','info')}return}
+ if(m.type==='fatal'){clearTimeout(rt.bt);rt.w.terminate();status('error','Python failed to load');write(m.message+'\nCheck your connection, then press Retry. Your files are safe.\n','err');return}
+ if(m.runId!==rt.cur)return;
+ if(m.type==='out'){for(const s of m.seg){write(s.t,s.k);if(s.k==='err'&&errText.length<30000)errText+=s.t}}
+ else if(m.type==='progress'){if(rt.st==='running')$('engl').textContent=m.label}
+ else if(m.type==='need-input'){rt.waiting=true;status('input','Waiting for your input');view('console');$('ci').focus()}
+ else if(m.type==='done'){clearTimeout(rt.grace);const was=rt.stopping,s=((performance.now()-rt.t0)/1000).toFixed(2)+'s';rt.waiting=false;rt.stopping=false;$('rt').textContent=s;
+  if(was){write('\n■ Stopped · '+s+' · Python and runtime files kept\n','err');status('stopped','Stopped · Python '+rt.ver+' ready')}
+  else{if(rt.kind==='run'){if(m.st==='ok')write('\n✓ Finished · '+s+'\n','ok');else write('\n✗ Exited with an error · '+s+'\n','err')}status('ready','Ready · Python '+rt.ver)}
+  if(!was&&rt.kind==='run'&&m.st!=='ok')jumpLink();errText=''}}
+function jumpLink(){let hit=null;for(const x of errText.matchAll(/File "([^"]+)", line (\d+)/g))if(x[1] in files)hit=x;if(!hit)return;
+ const b=document.createElement('button');b.className='jump tiny';b.textContent='↳ Go to '+hit[1]+', line '+hit[2];b.onclick=()=>{switchFile(hit[1]);view('code');ed.goto(+hit[2])};drain();con.append(b);con.scrollTop=con.scrollHeight}
+function go(m){if(!(rt.st==='ready'||rt.st==='stopped'))return false;persist();
+ const upd={},rem=[];for(const n in files)if(rt.synced.get(n)!==files[n])upd[n]=files[n];for(const n of rt.synced.keys())if(!(n in files))rem.push(n);
+ rt.synced=new Map(Object.entries(files));rt.cur=++rt.seq;rt.t0=performance.now();rt.stopping=false;rt.waiting=false;errText='';rt.kind=m.type;
+ if(iso){Atomics.store(rt.intr,0,0);Atomics.store(rt.ctl,0,0)}
+ status('running',m.type==='run'?'Running '+m.file:'Working…');
+ const prepared=iso?[]:$('prept').value.replace(/\r\n?/g,'\n').replace(/\n$/,'').split('\n').filter((_,i,a)=>a.length>1||a[0]!=='');
+ rt.w.postMessage({...m,runId:rt.cur,files:upd,removed:rem,names:Object.keys(files),queue:prepared,
+  imports:Object.entries(files).filter(([n])=>n.endsWith('.py')).map(e=>e[1]).join('\n')});return true}
+function run(name=active,args=[]){if(rt.st==='error'){boot();return}if(!(rt.st==='ready'||rt.st==='stopped')){toast(busy()?'Already running — press Stop first.':'Python is still loading.');return}
+ if(!name.endsWith('.py')){toast('Select a .py file to run.');return}if(prefs.clr)clearCon();view('console');
+ write('\n❯ python '+name+(args.length?' '+args.join(' '):'')+'\n','cmd');go({type:'run',file:name,args})}
+function hardStop(){clearTimeout(rt.grace);write('\n■ Stopped. Python was restarted: variables, runtime files and pip packages were reset. Editor files are untouched.\n','err');rt.after='stopped';boot('Restarting Python…')}
+function stop(){if(!busy())return;if(rt.stopping||!iso){hardStop();return}
+ rt.stopping=true;status('stopping','Stopping…');
+ if(rt.waiting){rt.waiting=false;Atomics.store(rt.ctl,0,3);Atomics.notify(rt.ctl,0)}else Atomics.store(rt.intr,0,2);
+ rt.grace=setTimeout(hardStop,1500)}
+function answer(line,eof){const b=eof?new Uint8Array(0):new TextEncoder().encode(line.slice(0,8000));rt.data.set(b);Atomics.store(rt.ctl,1,eof?-1:b.length);
+ write(eof?'^D\n':line+'\n','in');rt.waiting=false;status('running','Running '+active);Atomics.store(rt.ctl,0,2);Atomics.notify(rt.ctl,0)}
+const HELP='Commands\n  python <file.py> [args]  run an editor file (python3 works too)\n  ls | cat <file>          list / show files in Python’s workspace\n  pip install <pkg>…       pure-Python packages (cowsay, pyfiglet, inflect…); reset on restart\n  clear | help\n↑ / ↓ history · Ctrl+C stop · Ctrl+D end of input\nRuntime files (made by your programs) and pip packages are cleared on Restart; editor files never are.\n';
+function cmd(s){s=s.trim();if(!s)return;hist.push(s);hist=hist.slice(-100);hi=hist.length;draft='';store.set(HK,JSON.stringify(hist));write('❯ '+s+'\n','cmd');
+ const a=(s.match(/"[^"]*"|'[^']*'|\S+/g)||[]).map(x=>x.replace(/^(["'])(.*)\1$/,'$2')),c=a.shift();
+ if(c==='clear')return clearCon();if(c==='help')return write(HELP,'info');
+ if(c==='python'||c==='python3'){if(!a[0]||!(a[0] in files)||!a[0].endsWith('.py'))return write('Usage: python <file.py> — pick one of your editor files.\n','err');if(!(rt.st==='ready'||rt.st==='stopped'))return toast('Python is not ready.');return void go({type:'run',file:a[0],args:a.slice(1)})}
+ if(c==='ls'||(c==='cat'&&a.length===1)||(c==='pip'&&a[0]==='install'&&a.length>1)){if(!(rt.st==='ready'||rt.st==='stopped'))return toast('Python is not ready.');return void go({type:'fs',op:c,arg:a[0],args:a.slice(1)})}
+ write(c+': not a command here. Type help.\n','err')}
+$('cf').onsubmit=e=>{e.preventDefault();const v=$('ci').value;$('ci').value='';if(rt.st==='input')answer(v,false);else if(!busy())cmd(v)};
+$('ci').onkeydown=e=>{if(e.ctrlKey&&e.key.toLowerCase()==='c'&&!getSelection().toString()){e.preventDefault();stop()}
+ else if(e.ctrlKey&&e.key.toLowerCase()==='d'&&rt.st==='input'){e.preventDefault();answer('',true)}
+ else if(rt.st!=='input'&&e.key==='ArrowUp'){e.preventDefault();if(hi===hist.length)draft=e.target.value;if(hi>0)e.target.value=hist[--hi]}
+ else if(rt.st!=='input'&&e.key==='ArrowDown'){e.preventDefault();if(hi<hist.length){hi++;e.target.value=hi===hist.length?draft:hist[hi]}}};
+$('run').onclick=()=>run();$('stop').onclick=stop;
+$('restart').onclick=()=>{if(busy()&&!confirm('Stop the running program and restart Python?'))return;write('\n↻ Restarting Python — variables, runtime files and pip packages are reset. Editor files are untouched.\n','info');boot('Restarting Python…')};
+/* ---------- seal, settings, shortcuts, mobile keyboard, lifecycle ---------- */
+function showSeal(){const b=$('sealb');b.replaceChildren();if(seal){const i=document.createElement('img');i.src=seal;i.alt='Pomegranate × Lily seal';b.append(i)}else{const s=document.createElement('span');s.textContent='P/L';b.append(s)}}
+$('sealb').onclick=$('su').onclick=()=>$('sealf').click();
+$('sr').onclick=()=>{seal='';try{localStorage.removeItem(SK)}catch{}showSeal()};
+$('sealf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f||!/^image\/(png|jpeg|webp|gif)$/.test(f.type))return toast('Choose a PNG, JPEG, WebP or GIF image.');
+ const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{const k=Math.min(1,320/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);seal=c.toDataURL('image/png');showSeal();toast(store.set(SK,seal)?'Your seal is in place.':'Seal shown for now only — storage is full.')};
+ im.onerror=()=>{URL.revokeObjectURL(u);toast('Could not read that image.')};im.src=u};
+function applyPrefs(){document.documentElement.style.setProperty('--fs',prefs.fs+'px');$('fv').textContent=prefs.fs+'px';$('clr').checked=!!prefs.clr;if(cm)cm.refresh()}
+$('sett').onclick=()=>$('sd').showModal();$('sdc').onclick=()=>$('sd').close();
+$('fd').onclick=()=>{prefs.fs=Math.max(12,prefs.fs-1);applyPrefs();savePrefs()};$('fu').onclick=()=>{prefs.fs=Math.min(24,prefs.fs+1);applyPrefs();savePrefs()};$('clr').onchange=e=>{prefs.clr=e.target.checked;savePrefs()};
+document.addEventListener('keydown',e=>{if(!(e.metaKey||e.ctrlKey))return;if(e.key==='Enter'){e.preventDefault();if(!$('sd').open)run()}else if(e.key.toLowerCase()==='s'){e.preventDefault();persist();toast(saveOK?'Saved on this device. Export for a backup.':'Browser storage is unavailable — use Export.')}},true);
+const vv=window.visualViewport;if(vv){const f=()=>{document.documentElement.style.setProperty('--vh',vv.height+'px');document.body.classList.toggle('kb',vv.height<innerHeight*.78&&matchMedia('(max-width:800px)').matches);scrollTo(0,0);if(cm)cm.refresh()};vv.addEventListener('resize',f);vv.addEventListener('scroll',f);f()}
+window.addEventListener('pagehide',persist);document.addEventListener('visibilitychange',()=>{if(document.hidden)persist()});
+window.addEventListener('beforeunload',e=>{if(!saveOK){e.preventDefault();e.returnValue=''}});
+window.addEventListener('storage',e=>{if(e.key===KEY)toast('Another tab changed your workspace. Reload before editing here to avoid overwriting it.')});
+function loadScript(u){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=u;s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>no(Error('x'));document.head.append(s)})}
+async function enhance(){try{const b='https://cdn.jsdelivr.net/npm/codemirror@5.65.18/';await loadScript(b+'lib/codemirror.js');await Promise.all([loadScript(b+'mode/python/python.js'),loadScript(b+'addon/edit/matchbrackets.js')]);
+ persist();cm=CodeMirror.fromTextArea(ta,{mode:null,lineNumbers:true,indentUnit:4,tabSize:4,indentWithTabs:false,matchBrackets:true,inputStyle:'textarea',viewportMargin:20,screenReaderLabel:'Source code',
+  extraKeys:{Tab:c=>c.somethingSelected()?c.indentSelection('add'):c.replaceSelection('    ','end'),'Shift-Tab':c=>c.indentSelection('subtract')}});
+ $('gut').hidden=true;cm.on('change',changed);cm.on('cursorActivity',cursor);showFile();applyPrefs()}catch{$('einfo').textContent='Plain editor (no highlighting) · 4 spaces'}}
+showSeal();applyPrefs();showFile();
+if(!iso){$('prep').hidden=false;$('prep').open=true;$('fst').textContent='Runs in your browser · fallback input mode · autosaved on this device'}
+if(!saveOK)setSaved('⚠ NOT saved — browser storage is blocked. Export your files.',true);
+boot();enhance();
+</script>
+</body>
+</html>
