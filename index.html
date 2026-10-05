@@ -82,6 +82,15 @@ div.CodeMirror-cursors{visibility:hidden;position:relative;z-index:3}.CodeMirror
 #out{flex:1;min-height:80px;margin:0;padding:14px;overflow:auto;overscroll-behavior:contain;font:13px/1.7 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;tab-size:4}
 #out .info{color:#a996a0}#out .cmd{color:var(--gold)}#out .err{color:#f4a4b5}#out .ok{color:var(--leaf)}#out .in{color:var(--gold);font-weight:600}
 #out button.jump{display:block;margin:6px 0;font:12px var(--mono);color:var(--gold)}
+.coach{display:none;border-top:1px solid #dbb97d35;background:linear-gradient(180deg,#21171d,#171116);padding:11px 13px}
+.coach.show{display:block}
+.coachhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
+.coachhead strong{font-size:11px;letter-spacing:1.4px;color:var(--gold)}
+.coachbadge{font:10px var(--mono);color:var(--mut)}
+.coach p{margin:4px 0;color:#d8cbd1;font-size:12px;line-height:1.45}
+.coach code{display:block;margin:8px 0;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:#0e0a0d;color:#f1e7df;font:12px/1.45 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+.coachactions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.coachactions button{font-size:11px;padding:6px 9px}
 details{border-top:1px solid var(--line);background:#151013}summary{cursor:pointer;color:var(--mut);padding:8px 14px;font-size:11px}
 details p{margin:0 14px 6px;color:var(--mut);font-size:11px}
 details textarea{display:block;width:calc(100% - 28px);height:64px;margin:0 14px 10px;resize:vertical;background:#0e0a0d;border:1px solid var(--line);border-radius:8px;padding:8px;font:12px/1.5 var(--mono)}
@@ -177,6 +186,12 @@ body.coding .CodeMirror,body.coding #src{height:100%!important}
  <section class="panel con" aria-label="Python console">
   <div class="ph"><span>CONSOLE</span><span><span class="i" id="rt"></span> <button class="tiny quiet" id="copy">Copy</button> <button class="tiny quiet" id="clear">Clear</button></span></div>
   <pre id="out" tabindex="0" role="log" aria-label="Console output"></pre>
+  <section class="coach" id="coach" aria-live="polite" aria-label="Atelier Coach">
+   <div class="coachhead"><strong>ATELIER COACH</strong><span class="coachbadge" id="coachbadge">Likely explanation</span></div>
+   <p id="coachmsg"></p>
+   <code id="coachcode" hidden></code>
+   <div class="coachactions"><button type="button" class="tiny quiet" id="coachline" hidden>Show line</button><button type="button" class="tiny" id="coachapply" hidden>Apply likely fix</button><button type="button" class="tiny quiet" id="coachclose">Dismiss</button></div>
+  </section>
   <details id="prep" hidden><summary>Prepared answers for input() (fallback mode)</summary><p>One answer per line. Used because live typing needs the local server (see Help).</p><textarea id="prept" aria-label="Prepared input lines" spellcheck="false"></textarea></details>
   <div class="inputhint" id="inputhint" role="status">Python is waiting for your answer ↓</div>
   <form class="cmdrow" id="cf" data-m="cmd"><span class="pr" id="pr" aria-hidden="true">❯</span><label class="vh" for="ci" id="cil">Console command</label><input id="ci" enterkeyhint="send" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type help for commands"><button type="submit" class="tiny quiet" id="sendb" aria-label="Enter command">Enter</button></form>
@@ -379,6 +394,80 @@ function drain(){raf=0;const stick=con.scrollHeight-con.scrollTop-con.clientHeig
 function clearCon(){pend=[];con.replaceChildren();clen=0}
 $('clear').onclick=clearCon;
 $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(con.textContent);toast('Console copied')}catch{const r=document.createRange();r.selectNodeContents(con);const s=getSelection();s.removeAllRanges();s.addRange(r);toast('Selected — use your device’s Copy')}};
+
+/* ---------- Atelier Coach: beginner-friendly error interpretation ---------- */
+const coach={file:null,line:0,replacement:null,original:null};
+function hideCoach(){coach.file=null;coach.line=0;coach.replacement=null;coach.original=null;$('coach').classList.remove('show');$('coachcode').hidden=true;$('coachline').hidden=true;$('coachapply').hidden=true}
+$('coachclose').onclick=hideCoach;
+
+function editDistance(a,b){
+ a=a||'';b=b||'';const d=Array.from({length:b.length+1},(_,i)=>i);
+ for(let i=1;i<=a.length;i++){let prev=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const tmp=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));prev=tmp}}return d[b.length]
+}
+function definedNames(src){
+ const s=new Set();for(const m of src.matchAll(/^\s*([A-Za-z_]\w*)\s*=(?!=)/gm))s.add(m[1]);
+ for(const m of src.matchAll(/^\s*def\s+([A-Za-z_]\w*)\s*\(([^)]*)\)/gm)){s.add(m[1]);for(const p of m[2].split(',')){const n=p.trim().split(/[=:]/)[0].trim();if(/^[_A-Za-z]\w*$/.test(n))s.add(n)}}
+ for(const m of src.matchAll(/^\s*for\s+([A-Za-z_]\w*)\s+in\b/gm))s.add(m[1]);
+ return [...s]
+}
+function analyzeError(err){
+ const loc=[...err.matchAll(/File "([^"]+)", line (\d+)/g)].pop();
+ const file=loc&&loc[1] in files?loc[1]:active,line=loc?+loc[2]:0,src=files[file]||'',rows=src.split('\n'),raw=line?rows[line-1]||'':'';
+ let msg='Python found an error here. Read the original traceback above, then check this line and the line just before it.',code='',replacement=null,badge='Likely explanation';
+
+ if(/Perhaps you forgot a comma\?/i.test(err)){
+   msg='Python is guessing that two pieces of code may need a separator. Check just before the ^ marker. A comma is one possibility, but a missing operator, quote, bracket, or other separator can produce the same message.';
+   const fix=raw.replace(/(["'])\s+([A-Za-z_]\w*)/,'$1, $2');
+   if(fix!==raw){code=fix;replacement=fix;badge='Possible fix — verify it'}
+ }else if(/SyntaxError: expected ':'/i.test(err) || (/SyntaxError/i.test(err)&&/^\s*(if|elif|else|for|while|def|class|try|except|finally|with|match|case)\b/.test(raw)&&!/:\s*(#.*)?$/.test(raw))){
+   msg='This kind of Python statement normally ends with a colon. It looks like the block header is missing one.';
+   replacement=raw.replace(/\s*$/,'')+':';code=replacement;badge='High-confidence fix'
+ }else if(/SyntaxError/i.test(err)&&/^\s*(if|elif|while)\b/.test(raw)&&/(^|[^=!<>])=([^=]|$)/.test(raw)){
+   msg='It looks like you are testing a condition, but this line uses =, which assigns a value. For a comparison, you probably meant ==.';
+   replacement=raw.replace(/(^|[^=!<>])=([^=]|$)/,'$1==$2');code=replacement;badge='High-confidence fix'
+ }else if(/unterminated string literal|EOL while scanning string literal/i.test(err)){
+   msg='Python reached the end of the line before the string was closed. Check that the opening quote has a matching closing quote.';code=raw
+ }else if(/was never closed|unmatched ['")\]}]/i.test(err)){
+   msg='Python sees an opening or closing bracket/parenthesis that does not have a matching partner. Check this line and the line just before it.';code=raw
+ }else if(/IndentationError: expected an indented block/i.test(err)){
+   msg='Python expected code inside the block. The next line after a statement ending in : normally needs indentation (usually four spaces).';code=raw
+ }else if(/IndentationError|TabError/i.test(err)){
+   msg='Python is reading the indentation differently than you intended. Check the leading spaces on this line and nearby lines. This Atelier uses four spaces for indentation.';code=raw
+ }else{
+   const nm=err.match(/NameError: name ['"]([^'"]+)['"] is not defined/);
+   if(nm){
+     const bad=nm[1],names=definedNames(src),near=names.map(n=>[n,editDistance(bad,n)]).sort((a,b)=>a[1]-b[1])[0];
+     msg='Python does not know what '+bad+' refers to yet. Check whether you meant to create it earlier or whether the name is misspelled.';
+     if(near&&near[1]<=2){code='Did you mean: '+near[0]+' ?';badge='Possible typo'}
+   }else if(/AttributeError: ['"]builtin_function_or_method['"] object has no attribute/i.test(err)){
+     msg='This often happens when a method was referenced but not called before chaining another method. Check whether you forgot parentheses, for example .strip().lower() instead of .strip.lower().';code=raw
+   }else if(/ValueError: invalid literal for int\(\)/i.test(err)){
+     msg='Your code asked int() to convert text that is not a valid whole number. Check the value coming from input() before converting it.';
+   }else if(/TypeError: can only concatenate str/i.test(err)){
+     msg='Python is trying to join text with a non-text value using +. Convert the other value with str(...), or use print() with commas / an f-string.';
+   }else if(/ModuleNotFoundError/i.test(err)){
+     msg='Python cannot find that module in the current runtime. If it is a compatible pure-Python package, install it in the Console with pip install <package>, then run again.';
+   }else if(/TypeError/i.test(err)){
+     msg='Your syntax is valid, but Python received a type of value that this operation does not support. Read the final TypeError line above and compare the values used on this line.';code=raw
+   }else if(/SyntaxError/i.test(err)){
+     msg='Python could not parse this statement. The ^ marker is where Python finally got confused, but the actual mistake may be slightly before it. Check punctuation, quotes, brackets, operators, and colons.';code=raw
+   }
+ }
+ return {file,line,raw,msg,code,replacement,badge}
+}
+function showCoach(err){
+ const a=analyzeError(err);coach.file=a.file;coach.line=a.line;coach.original=a.raw;coach.replacement=a.replacement;
+ $('coachmsg').textContent=a.msg;$('coachbadge').textContent=a.badge||'Likely explanation';
+ $('coachcode').hidden=!a.code;$('coachcode').textContent=a.code||'';
+ $('coachline').hidden=!(a.file&&a.line);$('coachapply').hidden=!a.replacement;
+ $('coach').classList.add('show');
+}
+$('coachline').onclick=()=>{if(!coach.file||!coach.line)return;switchFile(coach.file);view('code');ed.goto(coach.line)};
+$('coachapply').onclick=()=>{if(!coach.file||!coach.line||!coach.replacement)return;const rows=(files[coach.file]||'').split('\n');
+ if(rows[coach.line-1]!==coach.original){toast('That line changed — run again before applying the suggestion.');return}
+ rows[coach.line-1]=coach.replacement;files[coach.file]=rows.join('\n');if(docs[coach.file]){docs[coach.file]=CodeMirror.Doc(files[coach.file],coach.file.endsWith('.py')?'python':null)}
+ active=coach.file;showFile();persist();view('code');ed.goto(coach.line);toast('Likely fix applied — review it, then Run again.');hideCoach()};
+
 /* ---------- Python runtime lifecycle ---------- */
 const rt={w:null,st:'loading',cur:0,seq:0,synced:new Map(),waiting:false,stopping:false,after:'ready',ver:'',t0:0,first:true};
 const busy=()=>rt.st==='running'||rt.st==='input'||rt.st==='stopping';
@@ -418,7 +507,7 @@ function onMsg(m){
  else if(m.type==='done'){clearTimeout(rt.grace);const was=rt.stopping,s=((performance.now()-rt.t0)/1000).toFixed(2)+'s';rt.waiting=false;rt.stopping=false;$('rt').textContent=s;
   if(was){write('\n■ Stopped · '+s+' · Python and runtime files kept\n','err');status('stopped','Stopped · Python '+rt.ver+' ready')}
   else{if(rt.kind==='run'){if(m.st==='ok')write('\n✓ Finished · '+s+'\n','ok');else write('\n✗ Exited with an error · '+s+'\n','err')}status('ready','Ready · Python '+rt.ver)}
-  if(!was&&rt.kind==='run'&&m.st!=='ok')jumpLink();errText=''}}
+  if(!was&&rt.kind==='run'&&m.st!=='ok'){jumpLink();showCoach(errText)}errText=''}}
 function jumpLink(){let hit=null;for(const x of errText.matchAll(/File "([^"]+)", line (\d+)/g))if(x[1] in files)hit=x;if(!hit)return;
  const b=document.createElement('button');b.className='jump tiny';b.textContent='↳ Go to '+hit[1]+', line '+hit[2];b.onclick=()=>{switchFile(hit[1]);view('code');ed.goto(+hit[2])};drain();con.append(b);con.scrollTop=con.scrollHeight}
 function go(m){if(!(rt.st==='ready'||rt.st==='stopped'))return false;persist();
@@ -430,7 +519,7 @@ function go(m){if(!(rt.st==='ready'||rt.st==='stopped'))return false;persist();
  rt.w.postMessage({...m,runId:rt.cur,files:upd,removed:rem,names:Object.keys(files),queue:prepared,
   imports:Object.entries(files).filter(([n])=>n.endsWith('.py')).map(e=>e[1]).join('\n')});return true}
 function run(name=active,args=[]){if(rt.st==='error'){boot();return}if(!(rt.st==='ready'||rt.st==='stopped')){toast(busy()?'Already running — press Stop first.':'Python is still loading.');return}
- if(!name.endsWith('.py')){toast('Select a .py file to run.');return}if(prefs.clr)clearCon();view('console');
+ if(!name.endsWith('.py')){toast('Select a .py file to run.');return}hideCoach();if(prefs.clr)clearCon();view('console');
  write('\n❯ python '+name+(args.length?' '+args.join(' '):'')+'\n','cmd');go({type:'run',file:name,args})}
 function hardStop(){clearTimeout(rt.grace);write('\n■ Stopped. Python was restarted: variables, runtime files and pip packages were reset. Editor files are untouched.\n','err');rt.after='stopped';boot('Restarting Python…')}
 function stop(){if(!busy())return;if(rt.stopping||!iso){hardStop();return}
