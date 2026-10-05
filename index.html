@@ -47,6 +47,7 @@ h1{margin:0;font:26px/1.2 Georgia,"Times New Roman",serif;letter-spacing:-.6px}
 .panel{min-height:0;min-width:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#1b1318,#171116);box-shadow:0 16px 45px #0003}
 .ph{display:flex;align-items:center;justify-content:space-between;gap:8px;height:42px;flex-shrink:0;padding:0 14px;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:2px;color:var(--gold);font-weight:650}
 .ph span.i{font:11px var(--mono);letter-spacing:0;color:var(--mut);font-weight:400}
+.kbdopen{display:none;font-size:11px;letter-spacing:0;padding:5px 9px;min-height:30px}
 .tabs{display:flex;gap:4px;padding:7px 9px;overflow:auto;flex-shrink:0;border-bottom:1px solid var(--line);background:#120d11}
 .tab{white-space:nowrap;border-color:transparent;color:var(--mut);font:12px var(--mono);padding:6px 11px;border-radius:8px}
 .tab[aria-selected=true]{background:#922f4a28;border-color:#b94b6c55;color:#f4d6dc}
@@ -109,7 +110,9 @@ dialog::backdrop{background:#080508c0}dialog h2{font:22px Georgia,serif;margin:0
  .bn{font-size:11px;letter-spacing:1.4px}
  .top{padding:7px 2px 6px}
  .seal{width:38px;height:38px}
- .right{gap:6px}.eng{font-size:11px;max-width:145px;overflow:hidden;text-overflow:ellipsis}
+ .right{gap:6px}
+ .bot .eng{font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis}
+ .kbdopen{display:inline-flex;align-items:center;gap:5px}
  .bar{margin-bottom:7px;padding:0 2px}
  .bar .tools{width:100%;justify-content:flex-end}
  .bar .tools #run,.bar .tools #stop,#openb{display:none}
@@ -152,15 +155,14 @@ body.coding .CodeMirror,body.coding #src{height:100%!important}
 <header class="top">
  <div class="brand"><button class="seal" id="sealb" aria-label="Upload your brand seal" title="Upload your Pomegranate × Lily seal"><span>P/L</span></button>
  <div><div class="bn">POMEGRANATE × LILY</div><div class="sub">Python atelier</div></div></div>
- <div class="right"><div class="eng" id="eng" data-s="loading" role="status" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="engl">Starting Python…</span></div>
- <button class="tiny" id="restart" title="Restart Python: clears variables, runtime files and pip packages; editor files are kept">Restart</button><button class="tiny" id="sett" aria-label="Settings">⚙</button></div>
+ <div class="right"><button class="tiny" id="restart" title="Restart Python: clears variables, runtime files and pip packages; editor files are kept">Restart</button><button class="tiny" id="sett" aria-label="Settings">⚙</button></div>
 </header>
 <div class="bar"><h1>Make something beautiful.</h1>
  <div class="tools"><button id="openb" title="Import text files">Open</button><button id="exp" title="Download current file">Export</button><button id="run" class="primary" disabled title="Run (Ctrl/⌘ + Enter)">▶ Run</button><button id="stop" class="danger" hidden title="Stop (Ctrl+C in the console)">■ Stop</button></div></div>
 <div class="views" role="group" aria-label="Mobile workspace controls"><button id="vcode" aria-pressed="true">⌨ Code</button><button id="mrun" class="primary" disabled>▶ Run</button><button id="vcon" aria-pressed="false">▤ Console</button></div>
 <main class="ws" id="ws" data-v="code">
  <section class="panel ed" aria-label="Code editor">
-  <div class="ph"><span>WORKSPACE</span><span class="i" id="etype">Python</span></div>
+  <div class="ph"><span>WORKSPACE</span><span><button type="button" class="tiny quiet kbdopen" id="kbdopen" aria-label="Show coding keyboard">⌨ Keyboard</button><span class="i" id="etype">Python</span></span></div>
   <div class="tabs" id="tabs" role="tablist" aria-label="Files"></div>
   <div class="fm"><label class="vh" for="fname">Filename (Enter to rename)</label><input id="fname" spellcheck="false" autocomplete="off" autocapitalize="off"><span class="saved" id="saved" role="status">Saved on this device</span><button class="tiny" id="del" aria-label="Delete this file">Delete</button></div>
   <div class="es" id="es"><pre class="gut" id="gut" aria-hidden="true">1</pre><textarea id="src" aria-label="Source code" wrap="off" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea></div>
@@ -180,7 +182,7 @@ body.coding .CodeMirror,body.coding #src{height:100%!important}
   <form class="cmdrow" id="cf" data-m="cmd"><span class="pr" id="pr" aria-hidden="true">❯</span><label class="vh" for="ci" id="cil">Console command</label><input id="ci" enterkeyhint="send" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type help for commands"><button type="submit" class="tiny quiet" id="sendb" aria-label="Enter command">Enter</button></form>
  </section>
 </main>
-<footer class="bot"><span id="fst">Runs in your browser · autosaved on this device</span><span>Run ⌘/Ctrl+↵ · Save ⌘/Ctrl+S · Stop Ctrl+C in console</span></footer>
+<footer class="bot"><span class="eng" id="eng" data-s="loading" role="status" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="engl">Starting Python…</span></span><span>Runs in your browser · autosaved on this device</span></footer>
 </div>
 <div class="toast" id="toast" role="status"></div>
 <input type="file" id="filef" multiple accept=".py,.txt,.json,.csv,.md,.yaml,.yml,.toml,.ini" hidden>
@@ -384,7 +386,13 @@ function sync(){const b=busy(),s=rt.st,can=s==='ready'||s==='stopped'||s==='erro
  $('sendb').textContent=inp?'Send':'Enter';$('sendb').setAttribute('aria-label',inp?'Send program input':'Enter console command');
  $('ci').placeholder=inp?'Type your answer here…':b?'Running… (Ctrl+C to stop)':'Type help for commands';$('ci').disabled=b&&!inp}
 const view=v=>{$('ws').dataset.v=v;$('vcode').setAttribute('aria-pressed',String(v==='code'));$('vcon').setAttribute('aria-pressed',String(v==='console'))};
-$('vcode').onclick=()=>{view('code');setTimeout(()=>ed.focus(),0)};$('vcon').onclick=()=>{view('console');setTimeout(()=>$('ci').focus(),0)};
+function forceKeyboard(){
+ view('code');mobileCoding(true);
+ if(cm){cm.focus();const inp=cm.getInputField&&cm.getInputField();if(inp)inp.focus({preventScroll:true});requestAnimationFrame(()=>cm.refresh())}
+ else ta.focus({preventScroll:true});
+}
+$('vcode').onclick=()=>{view('code');ed.focus()};$('kbdopen').onclick=forceKeyboard;
+$('vcon').onclick=()=>{view('console');$('ci').focus()};
 function boot(label){
  clearTimeout(rt.grace);clearTimeout(rt.bt);if(rt.w)rt.w.terminate();rt.waiting=false;rt.stopping=false;rt.synced=new Map();rt.cur=++rt.seq;
  status('loading',label||'Starting Python…');
