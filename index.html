@@ -293,6 +293,10 @@ def run_file(name, args_json):
         te = traceback.TracebackException(type(e), e, tb)
         te.stack = traceback.StackSummary.from_list([f for f in te.stack if f.filename != run_file.__code__.co_filename])
         ERR.write(''.join(te.format()).replace('File "/workspace/', 'File "'))
+        if isinstance(e, SyntaxError):
+            msg = getattr(e, 'msg', '') or ''
+            if 'Perhaps you forgot a comma?' in msg:
+                ERR.write('\nAtelier hint: Python is guessing here. Check the highlighted line, especially just before the ^ marker. Two values may need a comma, but the real problem could also be a missing operator, quote, bracket, or other separator.\n')
         if isinstance(e, ModuleNotFoundError) and e.name:
             ERR.write('Hint: "%s" is not a built-in module. If it is a pure-Python package, type  pip install %s  in the console, then Run again.\n' % (e.name, e.name.split('.')[0]))
     finally:
