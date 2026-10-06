@@ -12,7 +12,17 @@
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-<title>POMEGRANATE × LILY — Python Atelier</title>
+<title>Online Python IDE &amp; Interpreter — POMEGRANATE × LILY</title>
+<meta name="description" content="Free online Python IDE, editor and interpreter for writing and running Python in your browser. Includes a Python 3.14 runtime, console, mobile coding tools and Atelier Coach guidance.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://editorhw12-max.github.io/Python-Engine/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Online Python IDE & Interpreter — POMEGRANATE × LILY">
+<meta property="og:description" content="Write and run Python online in a browser-based IDE with a real console, mobile coding tools and beginner-friendly Atelier Coach guidance.">
+<meta property="og:url" content="https://editorhw12-max.github.io/Python-Engine/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Online Python IDE & Interpreter — POMEGRANATE × LILY">
+<meta name="twitter:description" content="A free online Python editor and interpreter with a browser runtime, console and Atelier Coach guidance.">
 <script src="./coi-serviceworker.js"></script>
 <style>
 :root{color-scheme:dark;--bg:#100b0e;--ink:#f3eddf;--mut:#b4a4a7;--gold:#dbb97d;--wine:#922f4a;--leaf:#8db49c;--line:#dbb97d29;--mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;--fs:15px;--vh:100dvh}
@@ -171,7 +181,7 @@ body.coding .CodeMirror,body.coding #src{height:100%!important}
  <div><div class="bn">POMEGRANATE × LILY</div><div class="sub">Python atelier</div></div></div>
  <div class="right"><button class="tiny" id="restart" title="Restart Python: clears variables, runtime files and pip packages; editor files are kept">Restart</button><button class="tiny" id="sett" aria-label="Settings">⚙</button></div>
 </header>
-<div class="bar"><h1>Make something beautiful.</h1>
+<div class="bar"><h1>Online Python IDE &amp; Interpreter</h1>
  <div class="tools"><button id="openb" title="Import text files">Open</button><button id="exp" title="Download current file">Export</button><button id="run" class="primary" disabled title="Run (Ctrl/⌘ + Enter)">▶ Run</button><button id="stop" class="danger" hidden title="Stop (Ctrl+C in the console)">■ Stop</button></div></div>
 <div class="views" role="group" aria-label="Mobile workspace controls"><button id="vcode" aria-pressed="true">Code</button><button id="kbdopen" aria-label="Show coding keyboard">⌨ Keyboard</button><button id="mrun" class="primary" disabled>▶ Run</button><button id="vcon" aria-pressed="false">Console</button></div>
 <main class="ws" id="ws" data-v="code">
