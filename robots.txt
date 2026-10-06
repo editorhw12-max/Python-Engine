@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://editorhw12-max.github.io/Python-Engine/sitemap.xml
+Sitemap: https://pomegranatexlily.github.io/Python-Atelier/sitemap.xml
