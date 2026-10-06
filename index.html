@@ -2,633 +2,131 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#160d12">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Python Atelier">
-<meta name="format-detection" content="telephone=no">
+<meta name="color-scheme" content="dark">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" sizes="180x180" href="./apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-<title>Online Python IDE &amp; Interpreter — POMEGRANATE × LILY</title>
-<meta name="description" content="Free online Python IDE, editor and interpreter for writing and running Python in your browser. Includes a Python 3.14 runtime, console, mobile coding tools and Atelier Coach guidance.">
-<meta name="robots" content="index,follow">
+<title>Online Python IDE, Editor & Interpreter — POMEGRANATE × LILY Python Atelier</title>
+<meta name="description" content="Write, run, debug and learn Python online with POMEGRANATE × LILY Python Atelier — a free browser-based Python IDE, editor, interpreter and beginner-focused coding workspace.">
+<meta name="robots" content="index,follow,max-image-preview:large">
 <link rel="canonical" href="https://editorhw12-max.github.io/Python-Engine/">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Online Python IDE & Interpreter — POMEGRANATE × LILY">
-<meta property="og:description" content="Write and run Python online in a browser-based IDE with a real console, mobile coding tools and beginner-friendly Atelier Coach guidance.">
+<meta property="og:title" content="POMEGRANATE × LILY Python Atelier — Online Python IDE">
+<meta property="og:description" content="Stop just watching Python tutorials. Write the code, run it, inspect the result, debug it and run it again.">
 <meta property="og:url" content="https://editorhw12-max.github.io/Python-Engine/">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Online Python IDE & Interpreter — POMEGRANATE × LILY">
-<meta name="twitter:description" content="A free online Python editor and interpreter with a browser runtime, console and Atelier Coach guidance.">
-<script src="./coi-serviceworker.js"></script>
-<style>
-:root{color-scheme:dark;--bg:#100b0e;--ink:#f3eddf;--mut:#b4a4a7;--gold:#dbb97d;--wine:#922f4a;--leaf:#8db49c;--line:#dbb97d29;--mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;--fs:15px;--vh:100dvh}
-*{box-sizing:border-box}[hidden]{display:none!important}
-html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
-button,input,textarea,summary{font:inherit;color:inherit}
-button{cursor:pointer;border:1px solid var(--line);background:#ffffff08;border-radius:10px;padding:8px 13px;transition:background .18s,border-color .18s,transform .18s;touch-action:manipulation}
-button:hover:not(:disabled){background:#dbb97d1a;border-color:#dbb97d70}button:active:not(:disabled){transform:translateY(1px)}
-button:disabled{opacity:.4;cursor:not-allowed}
-:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.primary{background:linear-gradient(135deg,#b3405c,#79243b);border-color:#bd596d;font-weight:650;box-shadow:0 4px 20px #8c2c4440}
-.danger{color:#f5a8b7}.tiny{font-size:12px;padding:5px 9px;border-radius:8px}.quiet{background:transparent}
-.app{height:var(--vh);display:flex;flex-direction:column;padding:env(safe-area-inset-top) max(16px,env(safe-area-inset-right)) env(safe-area-inset-bottom) max(16px,env(safe-area-inset-left));background:radial-gradient(ellipse at 15% 0,#651b3040,transparent 55%),radial-gradient(ellipse at 100% 100%,#21452e2a,transparent 45%)}
-.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 0 10px;flex-shrink:0}
-.brand{display:flex;align-items:center;gap:12px;min-width:0}
-.seal{width:44px;height:44px;flex-shrink:0;border-radius:50%;border:1px solid var(--gold);padding:0;overflow:hidden;background:#23151a;color:var(--gold);font:18px Georgia,serif;letter-spacing:-2px;box-shadow:inset 0 0 0 4px #110d10}
-.seal img{width:100%;height:100%;object-fit:contain;display:block}
-.bn{font-weight:600;font-size:13px;letter-spacing:2.2px}.sub{font-size:10px;letter-spacing:2.8px;text-transform:uppercase;color:var(--gold)}
-.right{display:flex;align-items:center;gap:8px}
-.eng{display:flex;gap:7px;align-items:center;font-size:12px;color:var(--mut);white-space:nowrap}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--gold)}
-[data-s=ready] .dot{background:var(--leaf)}[data-s=error] .dot{background:#fa8b9f}[data-s=stopped] .dot{background:#8c7a80}[data-s=input] .dot{background:var(--leaf);box-shadow:0 0 0 4px #8db49c30}
-[data-s=loading] .dot,[data-s=running] .dot,[data-s=stopping] .dot{animation:pulse 1.2s ease-in-out infinite}
-@keyframes pulse{50%{opacity:.35}}
-.bar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:10px;flex-shrink:0}
-h1{margin:0;font:26px/1.2 Georgia,"Times New Roman",serif;letter-spacing:-.6px}
-.tools{display:flex;gap:7px}
-.views{display:none;gap:6px;margin-bottom:8px}.views button{flex:1}.views [aria-pressed=true]{background:#922f4a38;border-color:#b94b6c80}
-.keybar{display:none;align-items:center;gap:6px;overflow-x:auto;overscroll-behavior-x:contain;padding:6px 8px;border-top:1px solid var(--line);background:#120d11;scrollbar-width:none}
-.keybar::-webkit-scrollbar{display:none}.keybar button{flex:0 0 auto;min-width:40px;min-height:36px;padding:5px 9px;border-radius:8px;font:14px var(--mono);background:#ffffff08}
-.ws{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,3fr) minmax(280px,2fr);gap:10px}
-.panel{min-height:0;min-width:0;display:flex;flex-direction:column;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#1b1318,#171116);box-shadow:0 16px 45px #0003}
-.ph{display:flex;align-items:center;justify-content:space-between;gap:8px;height:42px;flex-shrink:0;padding:0 14px;border-bottom:1px solid var(--line);font-size:10px;letter-spacing:2px;color:var(--gold);font-weight:650}
-.ph span.i{font:11px var(--mono);letter-spacing:0;color:var(--mut);font-weight:400}
-.kbdopen{display:none;font-size:11px;letter-spacing:0;padding:5px 9px;min-height:30px}
-.tabs{display:flex;gap:4px;padding:7px 9px;overflow:auto;flex-shrink:0;border-bottom:1px solid var(--line);background:#120d11}
-.tab{white-space:nowrap;border-color:transparent;color:var(--mut);font:12px var(--mono);padding:6px 11px;border-radius:8px}
-.tab[aria-selected=true]{background:#922f4a28;border-color:#b94b6c55;color:#f4d6dc}
-.fm{display:flex;align-items:center;gap:8px;padding:6px 14px;flex-shrink:0}
-.fm input{flex:1;min-width:0;border:0;background:transparent;font:12px var(--mono);padding:4px 0}
-.saved{font-size:11px;color:var(--leaf);white-space:nowrap}.saved.warn{color:#ffc27a}
-.es{flex:1;min-height:0;position:relative;display:flex;background:#171116}
-.gut{width:46px;flex-shrink:0;margin:0;padding:14px 8px 14px 0;text-align:right;overflow:hidden;background:#130e11;color:#7b6470;font:var(--fs)/1.6 var(--mono);user-select:none}
-#src{flex:1;min-width:0;resize:none;border:0;outline:0;padding:14px;margin:0;background:#171116;font:var(--fs)/1.6 var(--mono);tab-size:4;white-space:pre;overflow:auto}
-.CodeMirror{height:100%;width:100%;font:var(--fs)/1.6 var(--mono);color:var(--ink);background:#171116;position:relative;overflow:hidden;direction:ltr}
-.CodeMirror-scroll{overflow:scroll!important;margin-bottom:-50px;margin-right:-50px;padding-bottom:50px;height:100%;outline:0;position:relative}
-.CodeMirror-sizer{position:relative;border-right:50px solid transparent}
-.CodeMirror-vscrollbar,.CodeMirror-hscrollbar,.CodeMirror-scrollbar-filler,.CodeMirror-gutter-filler{position:absolute;z-index:6;display:none}
-.CodeMirror-gutters{position:absolute;left:0;top:0;min-height:100%;z-index:3;background:#130e11;border-right:1px solid #dbb97d12}
-.CodeMirror-gutter{white-space:normal;height:100%;display:inline-block;vertical-align:top;margin-bottom:-50px}
-.CodeMirror-gutter-wrapper{position:absolute;z-index:4;background:0 0!important;border:0!important}
-.CodeMirror-gutter-elt{position:absolute;cursor:default;z-index:4}
-.CodeMirror-linenumber{padding:0 10px 0 7px;min-width:28px;text-align:right;color:#7b6470;white-space:nowrap}
-.CodeMirror-lines{padding:14px 0;cursor:text;min-height:1px}
-.CodeMirror pre.CodeMirror-line{padding:0 14px;margin:0;border:0;background:0 0;font:inherit;white-space:pre;word-wrap:normal;color:inherit;position:relative;z-index:2;overflow:visible}
-.CodeMirror-wrap pre.CodeMirror-line{white-space:pre-wrap;word-break:normal}
-.CodeMirror-scroll,.CodeMirror-sizer,.CodeMirror-gutter,.CodeMirror-gutters,.CodeMirror-linenumber{box-sizing:content-box}
-.CodeMirror-code{outline:0}.CodeMirror-code>div{position:relative}
-.CodeMirror-measure{position:absolute;width:100%;height:0;overflow:hidden;visibility:hidden}.CodeMirror-measure pre{position:static}
-div.CodeMirror-cursors{visibility:hidden;position:relative;z-index:3}.CodeMirror-focused div.CodeMirror-cursors{visibility:visible}
-.CodeMirror-cursor{position:absolute;pointer-events:none;border-left:2px solid var(--gold);width:0}
-.CodeMirror-selected{background:#8e3c5c50}.CodeMirror-matchingbracket{color:var(--gold)!important;background:#dbb97d1c}
-.CodeMirror-linebackground{position:absolute;inset:0;z-index:0}.cm-err{background:#d9446a30}
-.cm-keyword{color:#ef93b0}.cm-atom,.cm-number{color:#deb980}.cm-def{color:#f1d6b3}.cm-variable{color:#eee4db}.cm-variable-2,.cm-property{color:#b5c9d8}.cm-variable-3{color:#c6b2df}.cm-operator{color:#d6bac7}.cm-comment{color:#a08492;font-style:italic}.cm-string,.cm-string-2{color:#a5c9a6}.cm-meta,.cm-builtin{color:#dfc1a2}.cm-error{color:#ff9aae}
-.foot{height:28px;display:flex;align-items:center;justify-content:space-between;padding:0 14px;border-top:1px solid var(--line);font:10px var(--mono);color:var(--mut);flex-shrink:0}
-.con{background:#110d10}
-#out{flex:1;min-height:80px;margin:0;padding:14px;overflow:auto;overscroll-behavior:contain;font:13px/1.7 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere;tab-size:4}
-#out .info{color:#a996a0}#out .cmd{color:var(--gold)}#out .err{color:#f4a4b5}#out .ok{color:var(--leaf)}#out .in{color:var(--gold);font-weight:600}
-#out button.jump{display:block;margin:6px 0;font:12px var(--mono);color:var(--gold)}
-.coach{display:none;border-top:1px solid #dbb97d35;background:linear-gradient(180deg,#21171d,#171116);padding:11px 13px}
-.coach.show{display:block}
-.coachhead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
-.coachhead strong{font-size:11px;letter-spacing:1.4px;color:var(--gold)}
-.coachbadge{font:10px var(--mono);color:var(--mut)}
-.coach p{margin:4px 0;color:#d8cbd1;font-size:12px;line-height:1.45}
-.coach code{display:block;margin:8px 0;padding:8px 9px;border:1px solid var(--line);border-radius:8px;background:#0e0a0d;color:#f1e7df;font:12px/1.45 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
-.coachactions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
-.coachactions button{font-size:11px;padding:6px 9px}
-.suggest{position:absolute;left:54px;right:10px;bottom:10px;z-index:12;display:none;max-height:min(210px,42vh);overflow:auto;border:1px solid #dbb97d55;border-radius:12px;background:#171116f5;box-shadow:0 12px 34px #0009;backdrop-filter:blur(10px)}
-.suggest.show{display:block}.suggesthead{position:sticky;top:0;display:flex;justify-content:space-between;gap:10px;padding:7px 10px;border-bottom:1px solid var(--line);background:#1e151bf2;font-size:9px;letter-spacing:1.2px;color:var(--gold)}
-.suggesthead span{letter-spacing:0;color:var(--mut);font:10px var(--mono);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sugitem{width:100%;display:flex;align-items:flex-start;gap:9px;text-align:left;border:0;border-radius:0;border-bottom:1px solid #dbb97d14;padding:8px 10px;background:transparent}
-.sugitem:last-child{border-bottom:0}.sugitem code{flex:0 0 auto;color:#f1d6b3;font:12px var(--mono)}.sugitem span{min-width:0;color:var(--mut);font-size:11px;line-height:1.35}
-@media(max-width:800px){.suggest{left:10px;right:10px;bottom:8px}}
-details{border-top:1px solid var(--line);background:#151013}summary{cursor:pointer;color:var(--mut);padding:8px 14px;font-size:11px}
-details p{margin:0 14px 6px;color:var(--mut);font-size:11px}
-details textarea{display:block;width:calc(100% - 28px);height:64px;margin:0 14px 10px;resize:vertical;background:#0e0a0d;border:1px solid var(--line);border-radius:8px;padding:8px;font:12px/1.5 var(--mono)}
-.inputhint{display:none;padding:8px 13px 0;border-top:1px solid var(--line);background:#1d1a14;color:var(--leaf);font:700 11px var(--sans);letter-spacing:.2px}
-.inputhint.show{display:block}
-.cmdrow{display:flex;align-items:center;gap:9px;padding:10px 13px;border-top:1px solid var(--line);background:#1a1116;flex-shrink:0}
-.cmdrow[data-m=input]{background:#1d1a14;box-shadow:inset 0 2px 0 var(--leaf)}
-.pr{color:var(--gold);font:17px var(--mono)}
-.cmdrow[data-m=input] .pr{font:700 10px var(--sans);letter-spacing:.8px;color:var(--leaf)}
-.cmdrow input{flex:1;min-width:0;padding:6px 0;background:transparent;border:0;outline:0;font:13px var(--mono)}
-.cmdrow input::placeholder{color:#84707c}
-.cmdrow[data-m=input] input::placeholder{color:#bcaab3}
-#sendb{min-width:64px;font-weight:700}
-.cmdrow[data-m=input] #sendb{background:var(--berry);border-color:#d96586;color:#fff}
-.bot{display:flex;justify-content:space-between;padding:8px 2px 10px;color:#99818c;font-size:10px;flex-shrink:0}
-.toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));left:50%;transform:translate(-50%,12px);opacity:0;pointer-events:none;background:#30212a;border:1px solid var(--line);border-radius:12px;padding:10px 18px;z-index:30;font-size:13px;transition:opacity .2s,transform .2s;max-width:90vw}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-dialog{background:#21171d;color:var(--ink);border:1px solid #dbb97d40;border-radius:18px;width:min(440px,calc(100% - 32px));padding:22px}
-dialog::backdrop{background:#080508c0}dialog h2{font:22px Georgia,serif;margin:0 0 12px}dialog p,dialog li{color:var(--mut);font-size:13px}
-.row{display:flex;gap:8px;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:13px}
-.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
-*{scrollbar-width:thin;scrollbar-color:#68415088 transparent}
-@media(max-width:800px){
- .app{padding-left:8px;padding-right:8px;height:var(--vh)}
- h1,.bn+.sub,.bot > span + span{display:none}
- .bn{font-size:11px;letter-spacing:1.4px}
- .top{padding:7px 2px 6px}
- .seal{width:38px;height:38px}
- .right{gap:6px}
- .bot .eng{font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis}
- .kbdopen{display:inline-flex;align-items:center;gap:5px}
- .bar{margin-bottom:7px;padding:0 2px}
- .bar .tools{width:100%;justify-content:flex-end}
- .bar .tools #run,.bar .tools #stop,#openb{display:none}
- .tools button{padding:8px 10px;min-height:40px}
- .ws{order:2;grid-template-columns:1fr;gap:0}
- .panel{border-radius:12px}
- .views{order:3;display:grid;grid-template-columns:.9fr .9fr minmax(92px,1.05fr) 1fr;gap:6px;margin:8px 0 0;padding:6px;border:1px solid var(--line);border-radius:15px;background:#130e12;box-shadow:0 -8px 28px #0003}
- .views button{min-height:44px;padding:8px 10px;font-weight:650}
- .views #mrun{box-shadow:none}
- .ws[data-v=code] .con,.ws[data-v=console] .ed{display:none}
- .cmdrow{padding:9px 10px}.cmdrow input,#src{font-size:16px}
- .fm{padding:5px 10px}.saved{max-width:42%;overflow:hidden;text-overflow:ellipsis}
- .ph{height:38px;padding:0 10px}.tabs{padding:6px 7px}.foot{padding:0 10px}
- .bot{order:4;padding:6px 2px 3px}
- body.coding .top,body.coding .bar,body.coding .bot,body.coding .views{display:none}
- body.coding .ed .ph,body.coding .ed .tabs,body.coding .ed .fm,body.coding .ed .foot,body.coding .ed .keybar{display:none}
- body.coding .app{padding:0;height:var(--vh);overscroll-behavior:none}
- body.coding .ws{order:1;display:block;height:100%;min-height:0}
- body.coding .panel{height:100%;border:0;border-radius:0;box-shadow:none}
- body.coding .ed{height:100%;min-height:0}
- body.coding .ed .es{height:100%;min-height:0;flex:1}
- body.coding .CodeMirror,body.coding #src{height:100%!important}
- body.coding .CodeMirror-lines{padding-top:10px;padding-bottom:14px}
- body.coding .CodeMirror pre.CodeMirror-line{padding-left:10px;padding-right:10px}
- body.coding .CodeMirror-linenumber{padding-left:4px;padding-right:8px}
+<meta name="twitter:title" content="POMEGRANATE × LILY Python Atelier">
+<meta name="twitter:description" content="A free browser-based Python IDE and practice workspace built around Write → Run → Observe → Debug → Repeat.">
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":["WebApplication","SoftwareApplication"],
+  "name":"POMEGRANATE × LILY — Python Atelier",
+  "alternateName":"Online Python IDE & Interpreter",
+  "url":"https://editorhw12-max.github.io/Python-Engine/",
+  "applicationCategory":"DeveloperApplication",
+  "applicationSubCategory":"EducationalApplication",
+  "operatingSystem":"Any",
+  "browserRequirements":"Requires JavaScript and a modern web browser",
+  "isAccessibleForFree":true,
+  "offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},
+  "description":"A free browser-based Python IDE, editor and interpreter for writing, running, debugging and learning Python.",
+  "featureList":[
+    "Browser-based Python runtime",
+    "Syntax-highlighted Python editor",
+    "Interactive console and input()",
+    "Multiple Python files with local autosave",
+    "Tracebacks with jump-to-line navigation",
+    "Atelier Coach error explanations",
+    "Context-aware Python Guide suggestions",
+    "Mobile-first coding controls",
+    "Import, export and compatible package installation"
+  ]
 }
-body.coding .top,body.coding .bar,body.coding .bot,body.coding .views{display:none!important}
-body.coding .ed .ph,body.coding .ed .tabs,body.coding .ed .fm,body.coding .ed .foot,body.coding .ed .keybar{display:none!important}
-body.coding .app{padding:0!important;height:var(--vh);overscroll-behavior:none}
-body.coding .ws{order:1!important;display:block!important;height:100%;min-height:0}
-body.coding .panel{height:100%;border:0;border-radius:0;box-shadow:none}
-body.coding .ed{display:flex!important;height:100%;min-height:0}
-body.coding .ed .es{height:100%;min-height:0;flex:1}
-body.coding .CodeMirror,body.coding #src{height:100%!important}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</script>
+<style>
+:root{color-scheme:dark;--bg:#100b0e;--panel:#181116;--ink:#f3eddf;--mut:#b7a7aa;--gold:#dbb97d;--wine:#922f4a;--leaf:#8db49c;--line:#dbb97d2d;--max:1080px}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(ellipse at 12% 0,#651b3040,transparent 48%),radial-gradient(ellipse at 90% 28%,#21452e26,transparent 38%),var(--bg);color:var(--ink);font:16px/1.65 system-ui,-apple-system,"Segoe UI",sans-serif}
+a{color:inherit}.wrap{width:min(var(--max),calc(100% - 36px));margin:auto}.top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:22px 0}.brand{display:flex;align-items:center;gap:12px}.seal{width:44px;height:44px;border:1px solid var(--gold);border-radius:50%;display:grid;place-items:center;background:#23151a;color:var(--gold);font:17px Georgia,serif}.house{font-size:12px;letter-spacing:2.1px;font-weight:700}.product{font-size:10px;letter-spacing:2.6px;text-transform:uppercase;color:var(--gold)}
+.btn{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border:1px solid #bd596d;border-radius:12px;padding:12px 18px;background:linear-gradient(135deg,#b3405c,#79243b);font-weight:750;box-shadow:0 8px 28px #8c2c4440}.btn.alt{background:#ffffff08;border-color:var(--line);font-weight:650}.hero{padding:72px 0 64px;display:grid;grid-template-columns:minmax(0,1.25fr) minmax(280px,.75fr);gap:46px;align-items:center}.eyebrow{color:var(--gold);font-size:12px;letter-spacing:2.1px;text-transform:uppercase;font-weight:700}.hero h1{font:clamp(42px,7vw,78px)/.98 Georgia,"Times New Roman",serif;letter-spacing:-2.2px;margin:14px 0 20px;max-width:900px}.hero p{font-size:19px;color:#d4c7ca;max-width:720px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:28px}.card{border:1px solid var(--line);border-radius:20px;padding:25px;background:linear-gradient(180deg,#1b1318,#151013);box-shadow:0 18px 48px #0004}.cycle{font:700 15px ui-monospace,SFMono-Regular,Consolas,monospace;line-height:2;color:var(--leaf)}.cycle b{color:var(--gold)}
+section{padding:66px 0;border-top:1px solid var(--line)}h2{font:clamp(30px,4.5vw,48px)/1.08 Georgia,"Times New Roman",serif;margin:0 0 16px}h3{font-size:17px;margin:0 0 8px;color:#f0dfc7}.lead{font-size:18px;color:#d4c7ca;max-width:820px}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:28px}.feature{border:1px solid var(--line);border-radius:16px;padding:20px;background:#ffffff05}.feature p{margin:0;color:var(--mut);font-size:14px}.steps{counter-reset:s;display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:28px}.step{counter-increment:s;border:1px solid var(--line);border-radius:14px;padding:16px;background:#151013}.step:before{content:"0" counter(s);display:block;color:var(--gold);font:12px ui-monospace,monospace;margin-bottom:12px}.step strong{display:block}.copy{max-width:820px}.copy p{color:#cbbdc1}.quote{font:clamp(24px,4vw,38px)/1.25 Georgia,serif;color:#eadcc5;margin:34px 0}.cta{text-align:center;padding:76px 20px}.cta p{color:var(--mut);max-width:680px;margin:0 auto 24px}footer{border-top:1px solid var(--line);padding:24px 0 36px;color:#95838b;font-size:12px}
+@media(max-width:820px){.hero{grid-template-columns:1fr;padding-top:46px}.grid{grid-template-columns:1fr}.steps{grid-template-columns:1fr 1fr}.hero h1{letter-spacing:-1.4px}.top .btn{padding:9px 12px;font-size:13px}}
+@media(max-width:480px){.wrap{width:min(100% - 22px,var(--max))}.house{font-size:10px;letter-spacing:1.35px}.product{font-size:9px}.seal{width:38px;height:38px}.hero{padding:38px 0 48px;gap:24px}.hero p{font-size:17px}.steps{grid-template-columns:1fr}.actions .btn{width:100%}}
 </style>
 </head>
 <body>
-<div class="app">
-<header class="top">
- <div class="brand"><button class="seal" id="sealb" aria-label="Upload your brand seal" title="Upload your Pomegranate × Lily seal"><span>P/L</span></button>
- <div><div class="bn">POMEGRANATE × LILY</div><div class="sub">Python atelier</div></div></div>
- <div class="right"><button class="tiny" id="restart" title="Restart Python: clears variables, runtime files and pip packages; editor files are kept">Restart</button><button class="tiny" id="sett" aria-label="Settings">⚙</button></div>
+<header class="wrap top">
+  <div class="brand"><div class="seal" aria-hidden="true">P/L</div><div><div class="house">POMEGRANATE × LILY</div><div class="product">Python Atelier</div></div></div>
+  <a class="btn alt" href="./app/">Open Atelier</a>
 </header>
-<div class="bar"><h1>Online Python IDE &amp; Interpreter</h1>
- <div class="tools"><button id="openb" title="Import text files">Open</button><button id="exp" title="Download current file">Export</button><button id="run" class="primary" disabled title="Run (Ctrl/⌘ + Enter)">▶ Run</button><button id="stop" class="danger" hidden title="Stop (Ctrl+C in the console)">■ Stop</button></div></div>
-<div class="views" role="group" aria-label="Mobile workspace controls"><button id="vcode" aria-pressed="true">Code</button><button id="kbdopen" aria-label="Show coding keyboard">⌨ Keyboard</button><button id="mrun" class="primary" disabled>▶ Run</button><button id="vcon" aria-pressed="false">Console</button></div>
-<main class="ws" id="ws" data-v="code">
- <section class="panel ed" aria-label="Code editor">
-  <div class="ph"><span>WORKSPACE</span><span class="i" id="etype">Python</span></div>
-  <div class="tabs" id="tabs" role="tablist" aria-label="Files"></div>
-  <div class="fm"><label class="vh" for="fname">Filename (Enter to rename)</label><input id="fname" spellcheck="false" autocomplete="off" autocapitalize="off"><span class="saved" id="saved" role="status">Saved on this device</span><button class="tiny" id="del" aria-label="Delete this file">Delete</button></div>
-  <div class="es" id="es"><pre class="gut" id="gut" aria-hidden="true">1</pre><textarea id="src" aria-label="Source code" wrap="off" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
-   <div class="suggest" id="suggest" role="listbox" aria-label="Python suggestions"><div class="suggesthead"><strong>PYTHON GUIDE</strong><span id="suggestwhy">Context suggestions</span></div><div id="suggestlist"></div></div>
+<main>
+<section class="wrap hero">
+  <div>
+    <div class="eyebrow">Free Online Python IDE · Editor · Interpreter</div>
+    <h1>Stop Just Watching Python Tutorials. Run the Code.</h1>
+    <p>Python becomes understandable when you write it, run it, break it, read what happened, fix it and run it again. Python Atelier is the browser-based workbench beside the lesson.</p>
+    <div class="actions"><a class="btn" href="./app/">Open Python Atelier</a><a class="btn alt" href="#how">How it works</a></div>
   </div>
-  <div class="keybar" id="keybar" aria-label="Python coding keys">
-   <button type="button" data-key="    ">Tab</button><button type="button" data-key="(">(</button><button type="button" data-key=")">)</button>
-   <button type="button" data-key=":">:</button><button type="button" data-key="&quot;">"</button><button type="button" data-key="'">'</button>
-   <button type="button" data-key="[">[</button><button type="button" data-key="]">]</button><button type="button" data-key="{">{</button>
-   <button type="button" data-key="}">}</button><button type="button" data-key="#">#</button><button type="button" data-key="_">_</button>
+  <aside class="card">
+    <div class="eyebrow">The practice loop</div>
+    <div class="cycle"><b>WRITE</b><br>↓<br><b>RUN</b><br>↓<br>OBSERVE<br>↓<br>DEBUG<br>↓<br><b>REPEAT</b></div>
+    <p style="color:var(--mut);margin-bottom:0">No giant course catalog. No social feed. No points system. Just a focused place to practice the craft.</p>
+  </aside>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>The workbench beside the lesson.</h2>
+    <p class="lead">Use Python Atelier alongside CS50P, a book, a class, a tutorial or independent study. Read a little, write a little, run it, change it and see what happens.</p>
+    <div class="steps">
+      <div class="step"><strong>Write</strong><span>Put the idea into Python yourself.</span></div>
+      <div class="step"><strong>Run</strong><span>Execute it immediately in the browser.</span></div>
+      <div class="step"><strong>Observe</strong><span>Read the output, prompt or traceback.</span></div>
+      <div class="step"><strong>Debug</strong><span>Understand what Python is telling you.</span></div>
+      <div class="step"><strong>Repeat</strong><span>Change the code and test the next thought.</span></div>
+    </div>
   </div>
-  <div class="foot"><span id="cur">Ln 1, Col 1</span><span id="einfo">4 spaces · UTF-8</span></div>
- </section>
- <section class="panel con" aria-label="Python console">
-  <div class="ph"><span>CONSOLE</span><span><span class="i" id="rt"></span> <button class="tiny quiet" id="copy">Copy</button> <button class="tiny quiet" id="clear">Clear</button></span></div>
-  <pre id="out" tabindex="0" role="log" aria-label="Console output"></pre>
-  <section class="coach" id="coach" aria-live="polite" aria-label="Atelier Coach">
-   <div class="coachhead"><strong>ATELIER COACH</strong><span class="coachbadge" id="coachbadge">Likely explanation</span></div>
-   <p id="coachmsg"></p>
-   <code id="coachcode" hidden></code>
-   <div class="coachactions"><button type="button" class="tiny quiet" id="coachline" hidden>Show line</button><button type="button" class="tiny" id="coachapply" hidden>Apply likely fix</button><button type="button" class="tiny quiet" id="coachclose">Dismiss</button></div>
-  </section>
-  <details id="prep" hidden><summary>Prepared answers for input() (fallback mode)</summary><p>One answer per line. Used because live typing needs the local server (see Help).</p><textarea id="prept" aria-label="Prepared input lines" spellcheck="false"></textarea></details>
-  <div class="inputhint" id="inputhint" role="status">Python is waiting for your answer ↓</div>
-  <form class="cmdrow" id="cf" data-m="cmd"><span class="pr" id="pr" aria-hidden="true">❯</span><label class="vh" for="ci" id="cil">Console command</label><input id="ci" enterkeyhint="send" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type help for commands"><button type="submit" class="tiny quiet" id="sendb" aria-label="Enter command">Enter</button></form>
- </section>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2>An online Python compiler experience built for practice.</h2>
+    <p class="lead">People often search for an online Python compiler, editor or interpreter when what they really need is a fast place to write and execute Python. Atelier combines those needs into one focused browser workspace.</p>
+    <div class="grid">
+      <article class="feature"><h3>Browser Python runtime</h3><p>Write and run Python without installing a desktop development environment first.</p></article>
+      <article class="feature"><h3>Real console flow</h3><p>Run programs, see output, answer <code>input()</code> prompts and keep the code → response → result loop visible.</p></article>
+      <article class="feature"><h3>Files that stay with you</h3><p>Create multiple Python files, rename them, import, export and autosave the workspace on your device.</p></article>
+      <article class="feature"><h3>Tracebacks you can follow</h3><p>Python's real traceback stays visible, with jump-to-line navigation when the error points back into your files.</p></article>
+      <article class="feature"><h3>Atelier Coach</h3><p>Confusing errors get a beginner-friendly explanation and likely intent without silently rewriting your program.</p></article>
+      <article class="feature"><h3>Python Guide</h3><p>Context-aware suggestions surface built-ins, variables and type-relevant methods while leaving the actual logic to you.</p></article>
+      <article class="feature"><h3>Mobile-first controls</h3><p>Code, Keyboard, Run and Console controls are designed so the practice loop still works on a phone.</p></article>
+      <article class="feature"><h3>Keyboard shortcuts</h3><p>Run from a physical keyboard with Ctrl/Command + Enter and work with a familiar coding rhythm.</p></article>
+      <article class="feature"><h3>Compatible packages</h3><p>Use terminal-style commands and install compatible pure-Python packages inside the browser runtime.</p></article>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap copy">
+    <h2>Why another online Python IDE?</h2>
+    <p>Because a beginner does not only need somewhere that can execute Python. The learning loop has to stay understandable. When a program asks for input, the place to answer should be obvious. When Python raises an error, the real message should stay visible. When a hint appears, it should help you learn the language instead of taking control of the program.</p>
+    <p>Python Atelier is intentionally a workshop rather than a replacement for a course. The lesson can come from anywhere. Atelier gives you somewhere to practice what the lesson just taught.</p>
+    <p class="quote">“You did not just read about Python. You gave Python an instruction.”</p>
+    <p>The goal is simple: do not just read the next piece of Python you encounter. Put it in the workshop, change it, run it and find out what it does.</p>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <div class="eyebrow">Your code. Your craft.</div>
+    <h2>Start here: run your first Python program.</h2>
+    <p>Open the Atelier. The starter file is already there. Change it, run it and begin the loop.</p>
+    <a class="btn" href="./app/">Open Python Atelier</a>
+  </div>
+</section>
 </main>
-<footer class="bot"><span class="eng" id="eng" data-s="loading" role="status" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="engl">Starting Python…</span></span><span>Runs in your browser · autosaved on this device</span></footer>
-</div>
-<div class="toast" id="toast" role="status"></div>
-<input type="file" id="filef" multiple accept=".py,.txt,.json,.csv,.md,.yaml,.yml,.toml,.ini" hidden>
-<input type="file" id="sealf" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
-<dialog id="sd"><h2>Your atelier.</h2>
- <div class="row"><span>Font size</span><span><button class="tiny" id="fd" aria-label="Smaller">−</button> <span id="fv">15px</span> <button class="tiny" id="fu" aria-label="Larger">＋</button></span></div>
- <div class="row"><span>Clear console on each run</span><input type="checkbox" id="clr" aria-label="Clear console on each run"></div>
- <div class="row"><span>Coach suggestions</span><input type="checkbox" id="sgt" aria-label="Show context-aware Python suggestions"></div>
- <div class="row"><span>Brand seal</span><span><button class="tiny" id="su">Upload</button> <button class="tiny" id="sr">Remove</button></span></div>
- <h2 style="margin-top:18px">Help</h2>
- <ul><li><b>Live input():</b> on GitHub Pages, <code>coi-serviceworker.js</code> enables the browser isolation required for terminal input. The first visit may reload once automatically. If isolation is unavailable (for example, in some private-browsing modes), the Prepared answers fallback appears instead.</li>
- <li><b>Stop:</b> normally interrupts the running program and keeps Python state. If the browser cannot provide cross-origin isolation, Stop safely restarts Python instead.</li>
- <li><b>Reset on restart:</b> variables, files your programs create, and pip packages are cleared. Editor files are never touched.</li></ul>
- <div style="text-align:right;margin-top:14px"><button id="sdc">Done</button></div></dialog>
-<script type="text/plain" id="wsrc">
-let py,runFile,ctl,data,intr,interactive=false,queue=[],seg=[],n=0,cap=0,last=0,cancelled=false,runId=0,busy=false;
-const dec=new TextDecoder(),LIM=300000;
-const post=(t,o={})=>postMessage({type:t,runId,...o});
-function flush(){if(seg.length){post('out',{seg});seg=[];n=0}last=performance.now()}
-function out(t,k){if(!t)return;if(cap>=LIM){if(cap===LIM){flush();post('out',{seg:[{t:'\n[Output limit reached; the rest of this run is not shown.]\n',k:'info'}]});cap++}return}
- t=t.slice(0,LIM-cap);cap+=t.length;const l=seg[seg.length-1];if(l&&l.k===k)l.t+=t;else seg.push({t,k});n+=t.length;if(n>4000||performance.now()-last>60)flush()}
-onmessage=async({data:m})=>{
- if(m.type==='init'){try{
-  if(m.ctl){ctl=new Int32Array(m.ctl);data=new Uint8Array(m.data);intr=new Int32Array(m.intr);interactive=true}
-  const {loadPyodide}=await import(m.cdn+'pyodide.mjs');py=await loadPyodide({indexURL:m.cdn});
-  py.FS.mkdirTree('/workspace');py.FS.chdir('/workspace');if(intr)py.setInterruptBuffer(intr);
-  py.registerJsModule('pl_bridge',{write:(k,t)=>out(t,k),interactive:()=>interactive,cancelled:()=>cancelled,
-   read_line(){flush();
-    if(!interactive){if(queue.length){const l=queue.shift();out(l+'\n','in');return l}return null}
-    Atomics.store(ctl,0,1);post('need-input');
-    while(Atomics.load(ctl,0)===1)Atomics.wait(ctl,0,1);
-    const s=Atomics.load(ctl,0),len=Atomics.load(ctl,1);Atomics.store(ctl,0,0);
-    if(s===3){cancelled=true;return null}if(len<0)return null;
-    const c=new Uint8Array(len);c.set(data.subarray(0,len));return dec.decode(c)}});
-  py.runPython(m.py);runFile=py.globals.get('run_file');
-  postMessage({type:'ready',runId:0,v:py.runPython('import sys\nsys.version.split()[0]')});
- }catch(e){postMessage({type:'fatal',runId:0,message:String(e&&e.message||e)})}return}
- if(!py||busy)return;busy=true;runId=m.runId;cancelled=false;cap=0;queue=m.queue||[];const t0=performance.now();let st='ok';
- try{
-  for(const f of m.removed)try{py.FS.unlink('/workspace/'+f)}catch{}
-  for(const k in m.files)py.FS.writeFile('/workspace/'+k,m.files[k]);
-  if(m.type==='run'){
-   post('progress',{label:'Loading packages…'});
-   try{await py.loadPackagesFromImports(m.imports)}catch(e){out('Package load problem: '+e.message+'\n','err')}
-   post('progress',{label:'Running Python'});st=runFile(m.file,JSON.stringify(m.args));
-  }else if(m.op==='ls'){
-   const rows=py.FS.readdir('/workspace').filter(f=>f!=='.'&&f!=='..').sort().map(f=>{const s=py.FS.stat('/workspace/'+f);return (py.FS.isDir(s.mode)?f+'/':f)+'  '+s.size+' B'+(m.names.includes(f)?'':'  (runtime only)')});
-   out((rows.join('\n')||'(empty)')+'\n','out');
-  }else if(m.op==='cat'){
-   if(/[\/\\]/.test(m.arg))throw Error('Use a plain filename.');
-   const t=py.FS.readFile('/workspace/'+m.arg,{encoding:'utf8'});out(t.slice(0,100000)+(t.endsWith('\n')?'':'\n'),'out');
-  }else if(m.op==='pip'){
-   post('progress',{label:'Installing packages…'});py.globals.set('_pk',m.args.join(' '));
-   await py.loadPackage('micropip');await py.runPythonAsync('import micropip\nawait micropip.install(_pk.split())');out('Installed: '+m.args.join(' ')+' (cleared when Python restarts)\n','ok');
-  }
- }catch(e){out(String(e&&e.message||e)+'\n','err');st='error'}
- flush();busy=false;post('done',{st,ms:performance.now()-t0});
-};
-</script>
-<script type="text/plain" id="psrc">
-import sys, io, builtins, traceback, importlib, linecache, types, os, json, atexit
-import pl_bridge as B
-sys.dont_write_bytecode = True
-class _W(io.RawIOBase):
-    def __init__(s, k): s.k = k
-    def writable(s): return True
-    def write(s, b):
-        B.write(s.k, bytes(b).decode('utf-8', 'replace')); return len(b)
-class _In(io.TextIOBase):
-    def readable(s): return True
-    def readline(s, size=-1):
-        l = B.read_line()
-        return '' if l is None else l + '\n'
-OUT = io.TextIOWrapper(_W('out'), encoding='utf-8', errors='backslashreplace', write_through=True)
-ERR = io.TextIOWrapper(_W('err'), encoding='utf-8', errors='backslashreplace', write_through=True)
-IN = _In()
-def _input(prompt=''):
-    if prompt != '': sys.stdout.write(str(prompt))
-    sys.stdout.flush()
-    l = B.read_line()
-    if l is None:
-        if B.cancelled(): raise KeyboardInterrupt
-        raise EOFError('EOF when reading a line' if B.interactive() else
-            'input() needs an answer but no prepared answers are left (add lines under "Prepared answers", or use serve.py for live typing).')
-    return l
-def run_file(name, args_json):
-    path = '/workspace/' + name
-    sys.stdout, sys.stderr, sys.stdin, builtins.input = OUT, ERR, IN, _input
-    sys.argv = [name] + json.loads(args_json)
-    os.chdir('/workspace')
-    if '/workspace' not in sys.path: sys.path.insert(0, '/workspace')
-    for k, m in list(sys.modules.items()):
-        f = getattr(m, '__file__', None)
-        if isinstance(f, str) and f.startswith('/workspace/'): del sys.modules[k]
-    importlib.invalidate_caches(); linecache.clearcache()
-    main = types.ModuleType('__main__'); main.__file__ = path
-    old = sys.modules.get('__main__'); sys.modules['__main__'] = main
-    status = 'ok'
-    try:
-        with open(path, encoding='utf-8') as f: code = compile(f.read(), path, 'exec')
-        exec(code, main.__dict__)
-    except SystemExit as e:
-        if e.code not in (None, 0):
-            ERR.write('Program exited with status %s\n' % e.code if isinstance(e.code, int) else '%s\n' % e.code)
-            status = 'error'
-    except BaseException as e:
-        status = 'error'
-        tb = e.__traceback__.tb_next if e.__traceback__ else None
-        te = traceback.TracebackException(type(e), e, tb)
-        te.stack = traceback.StackSummary.from_list([f for f in te.stack if f.filename != run_file.__code__.co_filename])
-        ERR.write(''.join(te.format()).replace('File "/workspace/', 'File "'))
-        if isinstance(e, SyntaxError):
-            msg = getattr(e, 'msg', '') or ''
-            if 'Perhaps you forgot a comma?' in msg:
-                ERR.write('\nAtelier hint: Python is guessing here. Check the highlighted line, especially just before the ^ marker. Two values may need a comma, but the real problem could also be a missing operator, quote, bracket, or other separator.\n')
-        if isinstance(e, ModuleNotFoundError) and e.name:
-            ERR.write('Hint: "%s" is not a built-in module. If it is a pure-Python package, type  pip install %s  in the console, then Run again.\n' % (e.name, e.name.split('.')[0]))
-    finally:
-        try: atexit._run_exitfuncs()
-        except BaseException: pass
-        if old is not None: sys.modules['__main__'] = old
-    return status
-</script>
-<script>
-'use strict';
-const $=id=>document.getElementById(id);
-const KEY='pl.atelier.v2',OLD='pl.atelier.v1',SK='pl.atelier.v2.seal',HK='pl.atelier.v2.hist',PK='pl.atelier.v2.prefs';
-const CDN='https://cdn.jsdelivr.net/pyodide/v314.0.7/full/';
-const iso=self.crossOriginIsolated===true&&typeof SharedArrayBuffer==='function';
-const store={get(k){try{return localStorage.getItem(k)}catch{return null}},set(k,v){try{localStorage.setItem(k,v);return true}catch{return false}}};
-const okName=n=>typeof n==='string'&&n&&n.length<=100&&n!=='.'&&n!=='..'&&!/[\/\\\x00-\x1f\x7f]/.test(n);
-const starter='# POMEGRANATE × LILY\n# Your code. Your craft.\n\nname = input("What is your name? ")\nprint(f"Hello, {name}.")\n';
-let files=Object.create(null),active='',seal=store.get(SK)||'',prefs={fs:15,clr:false,suggest:true},saveOK=true,timer=0,cm=null,docs=Object.create(null),hist=[],hi=0,draft='',errText='',suggestTimer=0;
-(function load(){let s=null;try{s=JSON.parse(store.get(KEY)||store.get(OLD)||'null')}catch{}
- if(s&&s.files&&typeof s.files==='object')for(const[n,t]of Object.entries(s.files))if(okName(n)&&typeof t==='string')files[n]=t;
- if(!Object.keys(files).length)files['hello.py']=starter;
- active=files[s&&s.active]!==undefined?s.active:Object.keys(files)[0];
- if(!seal&&s&&/^data:image\//.test(s.seal||''))seal=s.seal;
- try{prefs={...prefs,...JSON.parse(store.get(PK)||'{}')}}catch{}try{hist=JSON.parse(store.get(HK)||'[]').filter(x=>typeof x==='string').slice(-100)}catch{}hi=hist.length;
- if(store.get(KEY)===null&&!store.set(KEY,JSON.stringify({files,active}))){saveOK=false}})();
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove('show'),3000)}
-function setSaved(m,warn){$('saved').textContent=m;$('saved').classList.toggle('warn',!!warn)}
-function persist(){clearTimeout(timer);files[active]=ed.get();saveOK=store.set(KEY,JSON.stringify({files,active}));
- setSaved(saveOK?'Saved on this device':'⚠ NOT saved — storage blocked or full. Export your files.',!saveOK)}
-function changed(){files[active]=ed.get();setSaved('Saving…',true);clearTimeout(timer);timer=setTimeout(persist,400);if(cm)cm.eachLine(l=>cm.removeLineClass(l,'background','cm-err'));scheduleSuggest()}
-function savePrefs(){store.set(PK,JSON.stringify(prefs))}
-/* ---------- editor (CodeMirror when available, textarea otherwise; every edit path ends in changed()) ---------- */
-const ta=$('src');let gutN=0;
-const ed={get:()=>cm?cm.getValue():ta.value,focus:()=>cm?cm.focus():ta.focus(),
- goto(line){if(cm){cm.setCursor(line-1,0);cm.addLineClass(line-1,'background','cm-err');cm.scrollIntoView({line:line-1,ch:0},80);cm.focus()}else{const i=ta.value.split('\n').slice(0,line-1).join('\n').length+(line>1?1:0);ta.focus();ta.setSelectionRange(i,i)}}};
-function doc(n){return docs[n]||(docs[n]=CodeMirror.Doc(files[n],n.endsWith('.py')?'python':null))}
-function gutter(){const c=ta.value.split('\n').length;if(c!==gutN){gutN=c;$('gut').textContent=Array.from({length:c},(_,i)=>i+1).join('\n')}$('gut').scrollTop=ta.scrollTop}
-function cursor(){let l,c;if(cm){const p=cm.getCursor();l=p.line+1;c=p.ch+1}else{const b=ta.value.slice(0,ta.selectionStart).split('\n');l=b.length;c=b[b.length-1].length+1}$('cur').textContent='Ln '+l+', Col '+c;scheduleSuggest()}
-
-/* ---------- context-aware Python guide (advisory only; never blocks Run) ---------- */
-const PY_BUILTINS=[
- ['print','print(','print(value, …)','Display values in the console.'],['input','input(','input(prompt)','Read text from the user.'],['len','len(','len(obj)','Count items.'],
- ['str','str(','str(obj)','Convert a value to text.'],['int','int(','int(value)','Convert to a whole number.'],['float','float(','float(value)','Convert to a decimal number.'],
- ['bool','bool(','bool(value)','Convert to True or False.'],['list','list(','list(iterable)','Create a list.'],['dict','dict(','dict(…)','Create a dictionary.'],
- ['set','set(','set(iterable)','Create a set.'],['tuple','tuple(','tuple(iterable)','Create a tuple.'],['range','range(','range(stop)','Generate a sequence of integers.'],
- ['enumerate','enumerate(','enumerate(iterable)','Pair values with indexes.'],['zip','zip(','zip(…)','Pair values from iterables.'],['sorted','sorted(','sorted(iterable)','Return a sorted list.'],
- ['sum','sum(','sum(iterable)','Add numeric values.'],['min','min(','min(…)','Return the smallest value.'],['max','max(','max(…)','Return the largest value.'],
- ['abs','abs(','abs(number)','Return absolute value.'],['round','round(','round(number)','Round a number.'],['type','type(','type(obj)','Show a value’s type.'],
- ['isinstance','isinstance(','isinstance(obj, type)','Check whether a value has a type.'],['open','open(','open(file, mode)','Open a file.']
-];
-const PY_METHODS={
- str:[['lower','lower()','Make text lowercase.'],['upper','upper()','Make text uppercase.'],['strip','strip()','Remove whitespace at both ends.'],['lstrip','lstrip()','Remove whitespace at the start.'],['rstrip','rstrip()','Remove whitespace at the end.'],['split','split(','Split text into pieces.'],['replace','replace(','Replace part of a string.'],['startswith','startswith(','Check how text begins.'],['endswith','endswith(','Check how text ends.'],['find','find(','Find the position of text.'],['count','count(','Count occurrences.'],['join','join(','Join strings together.'],['capitalize','capitalize()','Capitalize the first character.'],['title','title()','Title-case the text.']],
- list:[['append','append(','Add one item to the end.'],['extend','extend(','Add several items.'],['insert','insert(','Insert an item at a position.'],['remove','remove(','Remove the first matching item.'],['pop','pop(','Remove and return an item.'],['sort','sort(','Sort this list in place.'],['reverse','reverse()','Reverse this list in place.'],['clear','clear()','Remove every item.'],['index','index(','Find an item’s position.'],['count','count(','Count matching items.'],['copy','copy()','Make a shallow copy.']],
- dict:[['get','get(','Read a key with an optional fallback.'],['keys','keys()','View the keys.'],['values','values()','View the values.'],['items','items()','View key/value pairs.'],['update','update(','Add or replace key/value pairs.'],['pop','pop(','Remove a key and return its value.'],['setdefault','setdefault(','Read a key or create a default.'],['copy','copy()','Make a shallow copy.'],['clear','clear()','Remove every item.']]
-};
-function hideSuggest(){clearTimeout(suggestTimer);$('suggest').classList.remove('show');$('suggestlist').replaceChildren()}
-function scheduleSuggest(){clearTimeout(suggestTimer);if(prefs.suggest===false||!active.endsWith('.py'))return hideSuggest();suggestTimer=setTimeout(updateSuggest,260)}
-function editorContext(){const src=ed.get(),pos=cm?cm.indexFromPos(cm.getCursor()):ta.selectionStart,before=src.slice(0,pos),line=before.split('\n').pop();return{src,pos,line}}
-function inferType(name,src){
- const tests=[['str',new RegExp('\\b'+name+'\\s*=\\s*(?:input\\s*\\(|[\\\'"])')],['int',new RegExp('\\b'+name+'\\s*=\\s*int\\s*\\(')],['float',new RegExp('\\b'+name+'\\s*=\\s*float\\s*\\(')],['list',new RegExp('\\b'+name+'\\s*=\\s*(?:\\[|list\\s*\\()')],['dict',new RegExp('\\b'+name+'\\s*=\\s*(?:\\{|dict\\s*\\()')]];
- for(const [t,r] of tests)if(r.test(src))return t;return ''}
-function usedStrings(src){const out=[],seen=new Set();for(const m of src.matchAll(/(["'])([^\n"'\\]{1,80})\1/g)){const v=m[2];if(!seen.has(v)){seen.add(v);out.push(v)}if(out.length>=8)break}return out}
-function suggestionItems(){
- const {src,line}=editorContext(),items=[];
- const dot=line.match(/\b([A-Za-z_]\w*)\.([A-Za-z_]\w*)?$/);
- if(dot){const type=inferType(dot[1],src),prefix=(dot[2]||'').toLowerCase(),methods=PY_METHODS[type]||[];for(const [name,insert,detail] of methods)if(name.startsWith(prefix))items.push({label:name+(insert.endsWith('(')?'(...)':''),insert:insert.slice(prefix.length),detail});return{why:type?type+' methods for '+dot[1]:'No inferred type',items:items.slice(0,8)}}
- const op=line.match(/\b([A-Za-z_]\w*)\s*(==|!=|<=|>=|<|>)\s*([A-Za-z_]\w*)?$/);
- if(op){const partial=(op[3]||'').toLowerCase(),type=inferType(op[1],src);if(!partial&&type==='str')for(const s of usedStrings(src))items.push({label:'"'+s+'"',insert:'"'+s.replace(/"/g,'\\"')+'"',detail:'Text already used in this file.'});
-  for(const v of ['True','False','None'])if(!partial||v.toLowerCase().startsWith(partial))items.push({label:v,insert:v.slice(op[3]?op[3].length:0),detail:v==='None'?'No value.':'Boolean value.'});
-  for(const n of definedNames(src))if(n!==op[1]&&(!partial||n.toLowerCase().startsWith(partial)))items.push({label:n,insert:n.slice(op[3]?op[3].length:0),detail:'Name already defined in this file.'});
-  if(!partial&&type==='str'&&!items.some(x=>x.label.startsWith('"')))items.unshift({label:'"text"',insert:'""',back:1,detail:'input() returns text, so a string is often compared here.'});
-  return{why:'values that can follow '+op[2],items:items.slice(0,8)}}
- const word=line.match(/(?:^|[^.\w])([A-Za-z_]\w*)$/);if(word){const p=word[1].toLowerCase();for(const [name,insert,label,detail] of PY_BUILTINS)if(name.startsWith(p))items.push({label,insert:insert.slice(word[1].length),detail});for(const n of definedNames(src))if(n.toLowerCase().startsWith(p)&&n!==word[1])items.push({label:n,insert:n.slice(word[1].length),detail:'Name already defined in this file.'});return{why:'Python built-ins and names in this file',items:items.slice(0,8)}}
- return{why:'',items:[]}
-}
-function applySuggestion(x){if(cm){cm.replaceSelection(x.insert,'end');if(x.back){const p=cm.getCursor();cm.setCursor(p.line,Math.max(0,p.ch-x.back))}cm.focus()}else{const a=ta.selectionStart,b=ta.selectionEnd;ta.setRangeText(x.insert,a,b,'end');if(x.back)ta.setSelectionRange(ta.selectionStart-x.back,ta.selectionStart-x.back);ta.dispatchEvent(new Event('input',{bubbles:true}));ta.focus()}hideSuggest()}
-function updateSuggest(){if(prefs.suggest===false||!active.endsWith('.py'))return hideSuggest();const r=suggestionItems();$('suggestwhy').textContent=r.why||'Context suggestions';const box=$('suggestlist');box.replaceChildren();if(!r.items.length)return $('suggest').classList.remove('show');
- for(const x of r.items){const b=document.createElement('button');b.type='button';b.className='sugitem';b.setAttribute('role','option');const code=document.createElement('code');code.textContent=x.label;const d=document.createElement('span');d.textContent=x.detail;b.append(code,d);b.onpointerdown=e=>{e.preventDefault();applySuggestion(x)};box.append(b)}$('suggest').classList.add('show')}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')hideSuggest()},true);
-let codingBaseH=0,sawKeyboard=false;
-function mobileCoding(on){
- if(on&&!matchMedia('(max-width:800px)').matches)return;
- const was=document.body.classList.contains('coding');
- document.body.classList.toggle('coding',!!on);
- if(on&&!was){codingBaseH=Math.round((window.visualViewport&&visualViewport.height)||innerHeight);sawKeyboard=false}
- requestAnimationFrame(()=>{if(cm)cm.refresh()})
-}
-$('es').addEventListener('pointerdown',()=>mobileCoding(true),true);
-$('es').addEventListener('touchstart',()=>mobileCoding(true),{capture:true,passive:true});
-ta.addEventListener('focus',()=>mobileCoding(true));
-ta.addEventListener('blur',()=>setTimeout(()=>{const a=document.activeElement;if(a!==ta&&!(a&&a.closest&&a.closest('.CodeMirror')))mobileCoding(false)},120));
-document.addEventListener('focusin',e=>{const t=e.target;if(t===ta||(t&&t.closest&&t.closest('.CodeMirror')))mobileCoding(true)},true);
-document.addEventListener('focusout',()=>setTimeout(()=>{const a=document.activeElement;if(a!==ta&&!(a&&a.closest&&a.closest('.CodeMirror')))mobileCoding(false)},120),true);
-ta.addEventListener('input',()=>{changed();gutter();cursor()});ta.addEventListener('scroll',gutter);['click','keyup'].forEach(e=>ta.addEventListener(e,cursor));
-ta.addEventListener('keydown',e=>{if(e.isComposing)return;const a=ta.selectionStart,b=ta.selectionEnd;
- const ins=s=>{e.preventDefault();ta.setRangeText(s,a,b,'end');ta.dispatchEvent(new Event('input',{bubbles:true}))};
- if(e.key==='Tab'&&!e.shiftKey)ins('    ');else if(e.key==='Enter'&&!e.ctrlKey&&!e.metaKey){const ln=ta.value.slice(0,a).split('\n').pop();ins('\n'+ln.match(/^\s*/)[0]+(/:\s*(#.*)?$/.test(ln)?'    ':''))}});
-function insertKey(s){if(cm){cm.replaceSelection(s,'end');cm.focus();return}const a=ta.selectionStart,b=ta.selectionEnd;ta.focus();ta.setRangeText(s,a,b,'end');ta.dispatchEvent(new Event('input',{bubbles:true}))}
-$('keybar').addEventListener('pointerdown',e=>{const b=e.target.closest('button[data-key]');if(!b)return;e.preventDefault();insertKey(b.dataset.key)});
-function showFile(){hideSuggest();if(cm){cm.swapDoc(doc(active))}else{ta.value=files[active];gutN=0;gutter()}$('etype').textContent=active.endsWith('.py')?'Python':'Text';tabs();cursor()}
-function switchFile(n){if(n===active)return;persist();active=n;showFile();persist();ed.focus()}
-function tabs(){const b=$('tabs');b.replaceChildren();for(const n in files){const t=document.createElement('button');t.className='tab';t.textContent=n;t.setAttribute('role','tab');t.setAttribute('aria-selected',String(n===active));t.tabIndex=n===active?0:-1;t.onclick=()=>switchFile(n);b.append(t)}
- const add=document.createElement('button');add.className='tab';add.textContent='＋';add.setAttribute('aria-label','New file');add.onclick=newFile;b.append(add);
- $('fname').value=active;const s=b.querySelector('[aria-selected=true]');if(s)s.scrollIntoView({block:'nearest',inline:'nearest'});sync()}
-$('tabs').addEventListener('keydown',e=>{const k=Object.keys(files),i=k.indexOf(active);const j={ArrowRight:i+1,ArrowLeft:i-1,Home:0,End:k.length-1}[e.key];if(j===undefined)return;e.preventDefault();switchFile(k[(j+k.length)%k.length]);$('tabs').querySelector('[aria-selected=true]').focus()});
-function newFile(){let n='untitled.py',i=2;while(n in files)n='untitled_'+i+++'.py';persist();files[n]='';active=n;showFile();persist();$('fname').focus();$('fname').select();toast('Name your file, then press Enter')}
-function rename(){const n=$('fname').value.trim();if(n===active)return;if(!okName(n)){toast('Use a filename without slashes.');$('fname').value=active;return}if(n in files){toast('That name is taken.');$('fname').value=active;return}
- persist();files[n]=files[active];delete files[active];if(docs[active]){docs[n]=docs[active];delete docs[active];if(cm)cm.setOption('mode',n.endsWith('.py')?'python':null)}active=n;persist();tabs();$('etype').textContent=n.endsWith('.py')?'Python':'Text';toast('Renamed. Python sees the new name on the next run.')}
-$('fname').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();rename();ed.focus()}else if(e.key==='Escape'){e.target.value=active;ed.focus()}};$('fname').onblur=rename;
-$('del').onclick=()=>{if(!confirm('Delete "'+active+'" from your editor files? This cannot be undone.'))return;delete files[active];delete docs[active];if(!Object.keys(files).length)files['main.py']='';active=Object.keys(files)[0];showFile();persist()};
-$('openb').onclick=()=>$('filef').click();
-$('filef').onchange=async e=>{let last=null,c=0;for(const f of e.target.files){if(!okName(f.name)||f.size>2e6){toast('Skipped '+f.name+' (bad name or over 2 MB).');continue}let n=f.name,i=2;while(n in files){const d=f.name.lastIndexOf('.');n=(d>0?f.name.slice(0,d):f.name)+'_'+i+++(d>0?f.name.slice(d):'')}
- try{files[n]=await f.text();last=n;c++}catch{toast('Could not read '+f.name)}}e.target.value='';if(last){persist();active=last;showFile();persist();toast(c+' file'+(c>1?'s':'')+' imported')}};
-$('exp').onclick=()=>{persist();const u=URL.createObjectURL(new Blob([files[active]],{type:'text/plain;charset=utf-8'})),a=document.createElement('a');a.href=u;a.download=active;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);toast('Exported '+active)};
-/* ---------- console ---------- */
-const con=$('out');let pend=[],raf=0,clen=0;
-function write(t,k='out'){if(!t)return;pend.push([t,k]);if(!raf)raf=requestAnimationFrame(drain)}
-function drain(){raf=0;const stick=con.scrollHeight-con.scrollTop-con.clientHeight<60;
- for(const[t,k]of pend){const s=con.lastChild;if(s&&s.dataset&&s.dataset.k===k)s.firstChild.appendData(t);else{const e=document.createElement('span');e.dataset.k=k;e.className=k;e.textContent=t;con.append(e)}clen+=t.length}pend=[];
- while(clen>200000&&con.firstChild!==con.lastChild){clen-=con.firstChild.textContent.length;con.firstChild.remove()}if(stick)con.scrollTop=con.scrollHeight}
-function clearCon(){pend=[];con.replaceChildren();clen=0}
-$('clear').onclick=clearCon;
-$('copy').onclick=async()=>{try{await navigator.clipboard.writeText(con.textContent);toast('Console copied')}catch{const r=document.createRange();r.selectNodeContents(con);const s=getSelection();s.removeAllRanges();s.addRange(r);toast('Selected — use your device’s Copy')}};
-
-/* ---------- Atelier Coach: beginner-friendly error interpretation ---------- */
-const coach={file:null,line:0,replacement:null,original:null};
-function hideCoach(){coach.file=null;coach.line=0;coach.replacement=null;coach.original=null;$('coach').classList.remove('show');$('coachcode').hidden=true;$('coachline').hidden=true;$('coachapply').hidden=true}
-$('coachclose').onclick=hideCoach;
-
-function editDistance(a,b){
- a=a||'';b=b||'';const d=Array.from({length:b.length+1},(_,i)=>i);
- for(let i=1;i<=a.length;i++){let prev=d[0];d[0]=i;for(let j=1;j<=b.length;j++){const tmp=d[j];d[j]=Math.min(d[j]+1,d[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));prev=tmp}}return d[b.length]
-}
-function definedNames(src){
- const s=new Set();for(const m of src.matchAll(/^\s*([A-Za-z_]\w*)\s*=(?!=)/gm))s.add(m[1]);
- for(const m of src.matchAll(/^\s*def\s+([A-Za-z_]\w*)\s*\(([^)]*)\)/gm)){s.add(m[1]);for(const p of m[2].split(',')){const n=p.trim().split(/[=:]/)[0].trim();if(/^[_A-Za-z]\w*$/.test(n))s.add(n)}}
- for(const m of src.matchAll(/^\s*for\s+([A-Za-z_]\w*)\s+in\b/gm))s.add(m[1]);
- return [...s]
-}
-function analyzeError(err){
- const loc=[...err.matchAll(/File "([^"]+)", line (\d+)/g)].pop();
- const file=loc&&loc[1] in files?loc[1]:active,line=loc?+loc[2]:0,src=files[file]||'',rows=src.split('\n'),raw=line?rows[line-1]||'':'';
- let msg='Python found an error here. Read the original traceback above, then check this line and the line just before it.',code='',replacement=null,badge='Likely explanation';
-
- if(/Perhaps you forgot a comma\?/i.test(err)){
-   msg='Python is guessing that two pieces of code may need a separator. Check just before the ^ marker. A comma is one possibility, but a missing operator, quote, bracket, or other separator can produce the same message.';
-   const fix=raw.replace(/(["'])\s+([A-Za-z_]\w*)/,'$1, $2');
-   if(fix!==raw){code=fix;replacement=fix;badge='Possible fix — verify it'}
- }else if(/SyntaxError: expected ':'/i.test(err) || (/SyntaxError/i.test(err)&&/^\s*(if|elif|else|for|while|def|class|try|except|finally|with|match|case)\b/.test(raw)&&!/:\s*(#.*)?$/.test(raw))){
-   msg='This kind of Python statement normally ends with a colon. It looks like the block header is missing one.';
-   replacement=raw.replace(/\s*$/,'')+':';code=replacement;badge='High-confidence fix'
- }else if(/SyntaxError/i.test(err)&&/^\s*(if|elif|while)\b/.test(raw)&&/(^|[^=!<>])=([^=]|$)/.test(raw)){
-   msg='It looks like you are testing a condition, but this line uses =, which assigns a value. For a comparison, you probably meant ==.';
-   replacement=raw.replace(/(^|[^=!<>])=([^=]|$)/,'$1==$2');code=replacement;badge='High-confidence fix'
- }else if(/unterminated string literal|EOL while scanning string literal/i.test(err)){
-   msg='Python reached the end of the line before the string was closed. Check that the opening quote has a matching closing quote.';code=raw
- }else if(/was never closed|unmatched ['")\]}]/i.test(err)){
-   msg='Python sees an opening or closing bracket/parenthesis that does not have a matching partner. Check this line and the line just before it.';code=raw
- }else if(/IndentationError: expected an indented block/i.test(err)){
-   msg='Python expected code inside the block. The next line after a statement ending in : normally needs indentation (usually four spaces).';code=raw
- }else if(/IndentationError|TabError/i.test(err)){
-   msg='Python is reading the indentation differently than you intended. Check the leading spaces on this line and nearby lines. This Atelier uses four spaces for indentation.';code=raw
- }else{
-   const nm=err.match(/NameError: name ['"]([^'"]+)['"] is not defined/);
-   if(nm){
-     const bad=nm[1],names=definedNames(src),near=names.map(n=>[n,editDistance(bad,n)]).sort((a,b)=>a[1]-b[1])[0];
-     msg='Python does not know what '+bad+' refers to yet. Check whether you meant to create it earlier or whether the name is misspelled.';
-     if(near&&near[1]<=2){code='Did you mean: '+near[0]+' ?';badge='Possible typo'}
-   }else if(/AttributeError: ['"]builtin_function_or_method['"] object has no attribute/i.test(err)){
-     msg='This often happens when a method was referenced but not called before chaining another method. Check whether you forgot parentheses, for example .strip().lower() instead of .strip.lower().';code=raw
-   }else if(/ValueError: invalid literal for int\(\)/i.test(err)){
-     msg='Your code asked int() to convert text that is not a valid whole number. Check the value coming from input() before converting it.';
-   }else if(/TypeError: can only concatenate str/i.test(err)){
-     msg='Python is trying to join text with a non-text value using +. Convert the other value with str(...), or use print() with commas / an f-string.';
-   }else if(/ModuleNotFoundError/i.test(err)){
-     msg='Python cannot find that module in the current runtime. If it is a compatible pure-Python package, install it in the Console with pip install <package>, then run again.';
-   }else if(/TypeError/i.test(err)){
-     msg='Your syntax is valid, but Python received a type of value that this operation does not support. Read the final TypeError line above and compare the values used on this line.';code=raw
-   }else if(/SyntaxError/i.test(err)){
-     msg='Python could not parse this statement. The ^ marker is where Python finally got confused, but the actual mistake may be slightly before it. Check punctuation, quotes, brackets, operators, and colons.';code=raw
-   }
- }
- return {file,line,raw,msg,code,replacement,badge}
-}
-function showCoach(err){
- const a=analyzeError(err);coach.file=a.file;coach.line=a.line;coach.original=a.raw;coach.replacement=a.replacement;
- $('coachmsg').textContent=a.msg;$('coachbadge').textContent=a.badge||'Likely explanation';
- $('coachcode').hidden=!a.code;$('coachcode').textContent=a.code||'';
- $('coachline').hidden=!(a.file&&a.line);$('coachapply').hidden=!a.replacement;
- $('coach').classList.add('show');
-}
-$('coachline').onclick=()=>{if(!coach.file||!coach.line)return;switchFile(coach.file);view('code');ed.goto(coach.line)};
-$('coachapply').onclick=()=>{if(!coach.file||!coach.line||!coach.replacement)return;const rows=(files[coach.file]||'').split('\n');
- if(rows[coach.line-1]!==coach.original){toast('That line changed — run again before applying the suggestion.');return}
- rows[coach.line-1]=coach.replacement;files[coach.file]=rows.join('\n');if(docs[coach.file]){docs[coach.file]=CodeMirror.Doc(files[coach.file],coach.file.endsWith('.py')?'python':null)}
- active=coach.file;showFile();persist();view('code');ed.goto(coach.line);toast('Likely fix applied — review it, then Run again.');hideCoach()};
-
-/* ---------- Python runtime lifecycle ---------- */
-const rt={w:null,st:'loading',cur:0,seq:0,synced:new Map(),waiting:false,stopping:false,after:'ready',ver:'',t0:0,first:true};
-const busy=()=>rt.st==='running'||rt.st==='input'||rt.st==='stopping';
-function status(st,label){rt.st=st;$('eng').dataset.s=st;$('engl').textContent=label;sync()}
-function sync(){const b=busy(),s=rt.st,can=s==='ready'||s==='stopped'||s==='error';$('run').disabled=!can;$('run').textContent=s==='error'?'↻ Retry':'▶ Run';$('stop').hidden=!b;
- const mb=$('mrun');if(mb){mb.disabled=!(can||b);mb.textContent=b?'■ Stop':s==='error'?'↻ Retry':'▶ Run';mb.classList.toggle('danger',b)}
- const inp=s==='input';$('cf').dataset.m=inp?'input':'cmd';$('pr').textContent=inp?'INPUT':'❯';$('cil').textContent=inp?'Answer for input()':'Console command';
- $('inputhint').classList.toggle('show',inp);$('inputhint').hidden=!inp;
- $('sendb').textContent=inp?'Send':'Enter';$('sendb').setAttribute('aria-label',inp?'Send program input':'Enter console command');
- $('ci').placeholder=inp?'Type your answer here…':b?'Running… (Ctrl+C to stop)':'Type help for commands';$('ci').disabled=b&&!inp}
-const view=v=>{$('ws').dataset.v=v;$('vcode').setAttribute('aria-pressed',String(v==='code'));$('vcon').setAttribute('aria-pressed',String(v==='console'))};
-function forceKeyboard(){
- view('code');
- if(cm){cm.focus();const inp=cm.getInputField&&cm.getInputField();if(inp)inp.focus({preventScroll:true});requestAnimationFrame(()=>cm.refresh())}
- else ta.focus({preventScroll:true});
-}
-$('vcode').onclick=()=>{view('code');ed.focus()};$('kbdopen').onclick=forceKeyboard;
-$('vcon').onclick=()=>{view('console');$('ci').focus()};
-function boot(label){
- clearTimeout(rt.grace);clearTimeout(rt.bt);if(rt.w)rt.w.terminate();rt.waiting=false;rt.stopping=false;rt.synced=new Map();rt.cur=++rt.seq;
- status('loading',label||'Starting Python…');
- let w;try{const u=URL.createObjectURL(new Blob([$('wsrc').textContent],{type:'text/javascript'}));w=new Worker(u,{type:'module'});setTimeout(()=>URL.revokeObjectURL(u),10000)}catch(e){status('error','Python unavailable');write('Could not start the Python worker: '+e.message+'\n','err');return}
- rt.w=w;if(iso){rt.ctl=new Int32Array(new SharedArrayBuffer(8));rt.data=new Uint8Array(new SharedArrayBuffer(65536));rt.intr=new Int32Array(new SharedArrayBuffer(4))}
- const fail=m=>{if(rt.w!==w)return;clearTimeout(rt.bt);w.terminate();status('error','Python failed to load');write(m+'\nCheck your connection, then press Retry. The editor still works and your files are safe.\n','err')};
- rt.bt=setTimeout(()=>fail('Python startup timed out.'),120000);setTimeout(()=>{if(rt.w===w&&rt.st==='loading')$('engl').textContent='Still loading (first load ~10 MB)…'},8000);
- w.onerror=e=>{e.preventDefault();fail(e.message||'Worker failed to start.')};
- w.onmessage=({data:m})=>{if(rt.w!==w)return;onMsg(m)};
- w.postMessage({type:'init',cdn:CDN,py:$('psrc').textContent,ctl:rt.ctl&&rt.ctl.buffer,data:rt.data&&rt.data.buffer,intr:rt.intr&&rt.intr.buffer})}
-function onMsg(m){
- if(m.type==='ready'){clearTimeout(rt.bt);rt.ver=m.v;const s=rt.after;rt.after='ready';status(s,s==='stopped'?'Stopped · Python '+m.v+' ready':'Ready · Python '+m.v);
-  if(rt.first){rt.first=false;write('POMEGRANATE × LILY / PYTHON ATELIER\n','cmd');write(iso?'Ready. Press Run — input() prompts appear here and you answer in the box below.\n\n':'Ready in fallback input mode. Live terminal input is unavailable in this browser session — see ⚙ Help.\n\n','info')}return}
- if(m.type==='fatal'){clearTimeout(rt.bt);rt.w.terminate();status('error','Python failed to load');write(m.message+'\nCheck your connection, then press Retry. Your files are safe.\n','err');return}
- if(m.runId!==rt.cur)return;
- if(m.type==='out'){for(const s of m.seg){write(s.t,s.k);if(s.k==='err'&&errText.length<30000)errText+=s.t}}
- else if(m.type==='progress'){if(rt.st==='running')$('engl').textContent=m.label}
- else if(m.type==='need-input'){rt.waiting=true;status('input','Waiting for your input');view('console');$('ci').focus();toast('Python is waiting — type your answer below, then tap Send')}
- else if(m.type==='done'){clearTimeout(rt.grace);const was=rt.stopping,s=((performance.now()-rt.t0)/1000).toFixed(2)+'s';rt.waiting=false;rt.stopping=false;$('rt').textContent=s;
-  if(was){write('\n■ Stopped · '+s+' · Python and runtime files kept\n','err');status('stopped','Stopped · Python '+rt.ver+' ready')}
-  else{if(rt.kind==='run'){if(m.st==='ok')write('\n✓ Finished · '+s+'\n','ok');else write('\n✗ Exited with an error · '+s+'\n','err')}status('ready','Ready · Python '+rt.ver)}
-  if(!was&&rt.kind==='run'&&m.st!=='ok'){jumpLink();showCoach(errText)}errText=''}}
-function jumpLink(){let hit=null;for(const x of errText.matchAll(/File "([^"]+)", line (\d+)/g))if(x[1] in files)hit=x;if(!hit)return;
- const b=document.createElement('button');b.className='jump tiny';b.textContent='↳ Go to '+hit[1]+', line '+hit[2];b.onclick=()=>{switchFile(hit[1]);view('code');ed.goto(+hit[2])};drain();con.append(b);con.scrollTop=con.scrollHeight}
-function go(m){if(!(rt.st==='ready'||rt.st==='stopped'))return false;persist();
- const upd={},rem=[];for(const n in files)if(rt.synced.get(n)!==files[n])upd[n]=files[n];for(const n of rt.synced.keys())if(!(n in files))rem.push(n);
- rt.synced=new Map(Object.entries(files));rt.cur=++rt.seq;rt.t0=performance.now();rt.stopping=false;rt.waiting=false;errText='';rt.kind=m.type;
- if(iso){Atomics.store(rt.intr,0,0);Atomics.store(rt.ctl,0,0)}
- status('running',m.type==='run'?'Running '+m.file:'Working…');
- const prepared=iso?[]:$('prept').value.replace(/\r\n?/g,'\n').replace(/\n$/,'').split('\n').filter((_,i,a)=>a.length>1||a[0]!=='');
- rt.w.postMessage({...m,runId:rt.cur,files:upd,removed:rem,names:Object.keys(files),queue:prepared,
-  imports:Object.entries(files).filter(([n])=>n.endsWith('.py')).map(e=>e[1]).join('\n')});return true}
-function run(name=active,args=[]){if(rt.st==='error'){boot();return}if(!(rt.st==='ready'||rt.st==='stopped')){toast(busy()?'Already running — press Stop first.':'Python is still loading.');return}
- if(!name.endsWith('.py')){toast('Select a .py file to run.');return}hideCoach();if(prefs.clr)clearCon();view('console');
- write('\n❯ python '+name+(args.length?' '+args.join(' '):'')+'\n','cmd');go({type:'run',file:name,args})}
-function hardStop(){clearTimeout(rt.grace);write('\n■ Stopped. Python was restarted: variables, runtime files and pip packages were reset. Editor files are untouched.\n','err');rt.after='stopped';boot('Restarting Python…')}
-function stop(){if(!busy())return;if(rt.stopping||!iso){hardStop();return}
- rt.stopping=true;status('stopping','Stopping…');
- if(rt.waiting){rt.waiting=false;Atomics.store(rt.ctl,0,3);Atomics.notify(rt.ctl,0)}else Atomics.store(rt.intr,0,2);
- rt.grace=setTimeout(hardStop,1500)}
-function answer(line,eof){const b=eof?new Uint8Array(0):new TextEncoder().encode(line.slice(0,8000));rt.data.set(b);Atomics.store(rt.ctl,1,eof?-1:b.length);
- write(eof?'^D\n':line+'\n','in');rt.waiting=false;status('running','Running '+active);Atomics.store(rt.ctl,0,2);Atomics.notify(rt.ctl,0)}
-const HELP='Commands\n  python <file.py> [args]  run an editor file (python3 works too)\n  ls | cat <file>          list / show files in Python’s workspace\n  pip install <pkg>…       pure-Python packages (cowsay, pyfiglet, inflect…); reset on restart\n  clear | help\n↑ / ↓ history · Ctrl+C stop · Ctrl+D end of input\nRuntime files (made by your programs) and pip packages are cleared on Restart; editor files never are.\n';
-function cmd(s){s=s.trim();if(!s)return;hist.push(s);hist=hist.slice(-100);hi=hist.length;draft='';store.set(HK,JSON.stringify(hist));write('❯ '+s+'\n','cmd');
- const a=(s.match(/"[^"]*"|'[^']*'|\S+/g)||[]).map(x=>x.replace(/^(["'])(.*)\1$/,'$2')),c=a.shift();
- if(c==='clear')return clearCon();if(c==='help')return write(HELP,'info');
- if(c==='python'||c==='python3'){if(!a[0]||!(a[0] in files)||!a[0].endsWith('.py'))return write('Usage: python <file.py> — pick one of your editor files.\n','err');if(!(rt.st==='ready'||rt.st==='stopped'))return toast('Python is not ready.');return void go({type:'run',file:a[0],args:a.slice(1)})}
- if(c==='ls'||(c==='cat'&&a.length===1)||(c==='pip'&&a[0]==='install'&&a.length>1)){if(!(rt.st==='ready'||rt.st==='stopped'))return toast('Python is not ready.');return void go({type:'fs',op:c,arg:a[0],args:a.slice(1)})}
- write(c+': not a command here. Type help.\n','err')}
-$('cf').onsubmit=e=>{e.preventDefault();const v=$('ci').value;$('ci').value='';if(rt.st==='input')answer(v,false);else if(!busy())cmd(v)};
-$('ci').onkeydown=e=>{if(e.ctrlKey&&e.key.toLowerCase()==='c'&&!getSelection().toString()){e.preventDefault();stop()}
- else if(e.ctrlKey&&e.key.toLowerCase()==='d'&&rt.st==='input'){e.preventDefault();answer('',true)}
- else if(rt.st!=='input'&&e.key==='ArrowUp'){e.preventDefault();if(hi===hist.length)draft=e.target.value;if(hi>0)e.target.value=hist[--hi]}
- else if(rt.st!=='input'&&e.key==='ArrowDown'){e.preventDefault();if(hi<hist.length){hi++;e.target.value=hi===hist.length?draft:hist[hi]}}};
-$('run').onclick=()=>run();$('stop').onclick=stop;$('mrun').onclick=()=>busy()?stop():run();
-$('restart').onclick=()=>{if(busy()&&!confirm('Stop the running program and restart Python?'))return;write('\n↻ Restarting Python — variables, runtime files and pip packages are reset. Editor files are untouched.\n','info');boot('Restarting Python…')};
-/* ---------- seal, settings, shortcuts, mobile keyboard, lifecycle ---------- */
-function showSeal(){const b=$('sealb');b.replaceChildren();if(seal){const i=document.createElement('img');i.src=seal;i.alt='Pomegranate × Lily seal';b.append(i)}else{const s=document.createElement('span');s.textContent='P/L';b.append(s)}}
-$('sealb').onclick=$('su').onclick=()=>$('sealf').click();
-$('sr').onclick=()=>{seal='';try{localStorage.removeItem(SK)}catch{}showSeal()};
-$('sealf').onchange=e=>{const f=e.target.files[0];e.target.value='';if(!f||!/^image\/(png|jpeg|webp|gif)$/.test(f.type))return toast('Choose a PNG, JPEG, WebP or GIF image.');
- const u=URL.createObjectURL(f),im=new Image();im.onload=()=>{const k=Math.min(1,320/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.max(1,Math.round(im.width*k));c.height=Math.max(1,Math.round(im.height*k));c.getContext('2d').drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(u);seal=c.toDataURL('image/png');showSeal();toast(store.set(SK,seal)?'Your seal is in place.':'Seal shown for now only — storage is full.')};
- im.onerror=()=>{URL.revokeObjectURL(u);toast('Could not read that image.')};im.src=u};
-function applyPrefs(){document.documentElement.style.setProperty('--fs',prefs.fs+'px');$('fv').textContent=prefs.fs+'px';$('clr').checked=!!prefs.clr;$('sgt').checked=prefs.suggest!==false;if(prefs.suggest===false)hideSuggest();if(cm)cm.refresh()}
-$('sett').onclick=()=>$('sd').showModal();$('sdc').onclick=()=>$('sd').close();
-$('fd').onclick=()=>{prefs.fs=Math.max(12,prefs.fs-1);applyPrefs();savePrefs()};$('fu').onclick=()=>{prefs.fs=Math.min(24,prefs.fs+1);applyPrefs();savePrefs()};$('clr').onchange=e=>{prefs.clr=e.target.checked;savePrefs()};$('sgt').onchange=e=>{prefs.suggest=e.target.checked;savePrefs();if(prefs.suggest)scheduleSuggest();else hideSuggest()};
-document.addEventListener('keydown',e=>{if(!(e.metaKey||e.ctrlKey))return;if(e.key==='Enter'){e.preventDefault();if(!$('sd').open)run()}else if(e.key.toLowerCase()==='s'){e.preventDefault();persist();toast(saveOK?'Saved on this device. Export for a backup.':'Browser storage is unavailable — use Export.')}},true);
-const vv=window.visualViewport;if(vv){let lastH=0;const f=()=>{const h=Math.round(vv.height);document.documentElement.style.setProperty('--vh',h+'px');
- if(document.body.classList.contains('coding')&&codingBaseH){if(h<codingBaseH-90)sawKeyboard=true;else if(sawKeyboard&&h>codingBaseH-45)mobileCoding(false)}
- if(cm&&Math.abs(h-lastH)>24)requestAnimationFrame(()=>cm.refresh());lastH=h};vv.addEventListener('resize',f);vv.addEventListener('scroll',f);f()}
-window.addEventListener('pagehide',persist);document.addEventListener('visibilitychange',()=>{if(document.hidden)persist()});
-window.addEventListener('beforeunload',e=>{if(!saveOK){e.preventDefault();e.returnValue=''}});
-window.addEventListener('storage',e=>{if(e.key===KEY)toast('Another tab changed your workspace. Reload before editing here to avoid overwriting it.')});
-function loadScript(u){return new Promise((ok,no)=>{const s=document.createElement('script');s.src=u;s.crossOrigin='anonymous';s.onload=ok;s.onerror=()=>no(Error('x'));document.head.append(s)})}
-async function enhance(){try{const b='https://cdn.jsdelivr.net/npm/codemirror@5.65.18/';await loadScript(b+'lib/codemirror.js');await Promise.all([loadScript(b+'mode/python/python.js'),loadScript(b+'addon/edit/matchbrackets.js')]);
- persist();cm=CodeMirror.fromTextArea(ta,{mode:null,lineNumbers:true,indentUnit:4,tabSize:4,indentWithTabs:false,matchBrackets:true,inputStyle:'textarea',viewportMargin:20,screenReaderLabel:'Source code',
-  extraKeys:{Tab:c=>c.somethingSelected()?c.indentSelection('add'):c.replaceSelection('    ','end'),'Shift-Tab':c=>c.indentSelection('subtract')}});
- $('gut').hidden=true;cm.on('focus',()=>mobileCoding(true));cm.on('blur',()=>setTimeout(()=>mobileCoding(false),80));cm.on('change',changed);cm.on('cursorActivity',cursor);showFile();applyPrefs()}catch{$('einfo').textContent='Plain editor (no highlighting) · 4 spaces'}}
-showSeal();applyPrefs();showFile();
-if(!iso){$('prep').hidden=false;$('prep').open=true;$('fst').textContent='Runs in your browser · fallback input mode · autosaved on this device'}
-if(!saveOK)setSaved('⚠ NOT saved — browser storage is blocked. Export your files.',true);
-boot();enhance();
-</script>
+<footer><div class="wrap">POMEGRANATE × LILY — Python Atelier · Browser-based Python practice workspace</div></footer>
 </body>
 </html>
-
-<!-- pages-redeploy: 2026-10-05 incident recovery -->
