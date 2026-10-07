@@ -25,7 +25,7 @@
 <meta name="twitter:description" content="A free online Python editor and interpreter with a browser runtime, console and Atelier Coach guidance.">
 <script src="../coi-serviceworker.js"></script>
 <style>
-:root{color-scheme:dark;--bg:#100b0e;--ink:#f3eddf;--mut:#b4a4a7;--gold:#dbb97d;--wine:#922f4a;--leaf:#8db49c;--line:#dbb97d29;--mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;--fs:15px;--vh:100dvh}
+:root{color-scheme:dark;--bg:#100b0e;--ink:#f3eddf;--mut:#b4a4a7;--gold:#dbb97d;--wine:#922f4a;--leaf:#8db49c;--line:#dbb97d29;--mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;--sans:system-ui,-apple-system,"Segoe UI",sans-serif;--berry:var(--wine);--fs:15px;--vh:100dvh}
 *{box-sizing:border-box}[hidden]{display:none!important}
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden}
 button,input,textarea,summary{font:inherit;color:inherit}
@@ -216,7 +216,7 @@ body.coding .CodeMirror,body.coding #src{height:100%!important}
    <code id="coachcode" hidden></code>
    <div class="coachactions"><button type="button" class="tiny quiet" id="coachline" hidden>Show line</button><button type="button" class="tiny" id="coachapply" hidden>Apply likely fix</button><button type="button" class="tiny quiet" id="coachclose">Dismiss</button></div>
   </section>
-  <details id="prep" hidden><summary>Prepared answers for input() (fallback mode)</summary><p>One answer per line. Used because live typing needs the local server (see Help).</p><textarea id="prept" aria-label="Prepared input lines" spellcheck="false"></textarea></details>
+  <details id="prep" hidden><summary>Prepared answers for input() (fallback mode)</summary><p>One answer per line. Used when live terminal input is unavailable in this browser session.</p><textarea id="prept" aria-label="Prepared input lines" spellcheck="false"></textarea></details>
   <div class="inputhint" id="inputhint" role="status">Python is waiting for your answer ↓</div>
   <form class="cmdrow" id="cf" data-m="cmd"><span class="pr" id="pr" aria-hidden="true">❯</span><label class="vh" for="ci" id="cil">Console command</label><input id="ci" enterkeyhint="send" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type help for commands"><button type="submit" class="tiny quiet" id="sendb" aria-label="Enter command">Enter</button></form>
  </section>
@@ -321,7 +321,7 @@ def _input(prompt=''):
     if l is None:
         if B.cancelled(): raise KeyboardInterrupt
         raise EOFError('EOF when reading a line' if B.interactive() else
-            'input() needs an answer but no prepared answers are left (add lines under "Prepared answers", or use serve.py for live typing).')
+            'input() needs an answer but no prepared answers are left (add lines under "Prepared answers").')
     return l
 def run_file(name, args_json):
     path = '/workspace/' + name
