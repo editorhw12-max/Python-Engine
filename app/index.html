@@ -173,6 +173,7 @@ body.coding .ed .es{height:100%;min-height:0;flex:1}
 body.coding .CodeMirror,body.coding #src{height:100%!important}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
+<link rel="stylesheet" href="./learning.css">
 </head>
 <body>
 <div class="app">
@@ -181,6 +182,12 @@ body.coding .CodeMirror,body.coding #src{height:100%!important}
  <div><div class="bn">POMEGRANATE × LILY</div><div class="sub">Python atelier</div></div></div>
  <div class="right"><button class="tiny" id="restart" title="Restart Python: clears variables, runtime files and pip packages; editor files are kept">Restart</button><button class="tiny" id="sett" aria-label="Settings">⚙</button></div>
 </header>
+<nav class="productnav" aria-label="Python Atelier sections">
+ <button type="button" data-product-view="workbench" aria-current="page">Workbench</button>
+ <button type="button" data-product-view="practice" aria-current="false">Practice</button>
+ <button type="button" data-product-view="garden" aria-current="false">Garden</button>
+ <button type="button" data-product-view="record" aria-current="false">Practice Record</button>
+</nav>
 <div class="bar"><h1>Make something beautiful.</h1>
  <div class="tools"><button id="openb" title="Import text files">Open</button><button id="exp" title="Download current file">Export</button><button id="run" class="primary" disabled title="Run (Ctrl/⌘ + Enter)">▶ Run</button><button id="stop" class="danger" hidden title="Stop (Ctrl+C in the console)">■ Stop</button></div></div>
 <div class="views" role="group" aria-label="Mobile workspace controls"><button id="vcode" aria-pressed="true">Code</button><button id="kbdopen" aria-label="Show coding keyboard">⌨ Keyboard</button><button id="mrun" class="primary" disabled>▶ Run</button><button id="vcon" aria-pressed="false">Console</button></div>
@@ -214,6 +221,9 @@ body.coding .CodeMirror,body.coding #src{height:100%!important}
   <form class="cmdrow" id="cf" data-m="cmd"><span class="pr" id="pr" aria-hidden="true">❯</span><label class="vh" for="ci" id="cil">Console command</label><input id="ci" enterkeyhint="send" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Type help for commands"><button type="submit" class="tiny quiet" id="sendb" aria-label="Enter command">Enter</button></form>
  </section>
 </main>
+<section class="learning-screen" id="practiceView" hidden aria-label="Atelier Practice"><div id="practiceRoot"></div></section>
+<section class="learning-screen" id="gardenView" hidden aria-label="Atelier Garden"><div id="gardenRoot"></div></section>
+<section class="learning-screen" id="recordView" hidden aria-label="Practice Record"><div id="recordRoot"></div></section>
 <footer class="bot"><span class="eng" id="eng" data-s="loading" role="status" aria-live="polite"><span class="dot" aria-hidden="true"></span><span id="engl">Starting Python…</span></span><span>Runs in your browser · autosaved on this device</span></footer>
 </div>
 <div class="toast" id="toast" role="status"></div>
@@ -230,7 +240,7 @@ body.coding .CodeMirror,body.coding #src{height:100%!important}
  <li><b>Reset on restart:</b> variables, files your programs create, and pip packages are cleared. Editor files are never touched.</li></ul>
  <div style="text-align:right;margin-top:14px"><button id="sdc">Done</button></div></dialog>
 <script type="text/plain" id="wsrc">
-let py,runFile,ctl,data,intr,interactive=false,queue=[],seg=[],n=0,cap=0,last=0,cancelled=false,runId=0,busy=false;
+let py,runFile,checkCase,sourceSig,ctl,data,intr,interactive=false,queue=[],seg=[],n=0,cap=0,last=0,cancelled=false,runId=0,busy=false;
 const dec=new TextDecoder(),LIM=300000;
 const post=(t,o={})=>postMessage({type:t,runId,...o});
 function flush(){if(seg.length){post('out',{seg});seg=[];n=0}last=performance.now()}
@@ -249,11 +259,24 @@ onmessage=async({data:m})=>{
     const s=Atomics.load(ctl,0),len=Atomics.load(ctl,1);Atomics.store(ctl,0,0);
     if(s===3){cancelled=true;return null}if(len<0)return null;
     const c=new Uint8Array(len);c.set(data.subarray(0,len));return dec.decode(c)}});
-  py.runPython(m.py);runFile=py.globals.get('run_file');
+  py.runPython(m.py);runFile=py.globals.get('run_file');checkCase=py.globals.get('check_case');sourceSig=py.globals.get('source_signature');
   postMessage({type:'ready',runId:0,v:py.runPython('import sys\nsys.version.split()[0]')});
  }catch(e){postMessage({type:'fatal',runId:0,message:String(e&&e.message||e)})}return}
  if(!py||busy)return;busy=true;runId=m.runId;cancelled=false;cap=0;queue=m.queue||[];const t0=performance.now();let st='ok';
  try{
+  if(m.type==='check'){
+   let signature=null;try{signature=sourceSig(m.source);if(signature!=null)signature=String(signature)}catch{}
+   post('check-signature',{signature});
+   const results=[];
+   for(let i=0;i<m.tests.length;i++){
+    post('check-case-start',{index:i});
+    let result;
+    try{result=JSON.parse(String(checkCase(m.source,JSON.stringify(m.tests[i].inputs||[]))))}
+    catch(e){result={ran:false,stdout:'',stderr:'',errorType:'SelfCheckError',error:String(e&&e.message||e)}}
+    results.push(result);post('check-case-result',{index:i,result});
+   }
+   busy=false;post('check-done',{results});return
+  }
   for(const f of m.removed)try{py.FS.unlink('/workspace/'+f)}catch{}
   for(const k in m.files)py.FS.writeFile('/workspace/'+k,m.files[k]);
   if(m.type==='run'){
@@ -270,7 +293,7 @@ onmessage=async({data:m})=>{
    post('progress',{label:'Installing packages…'});py.globals.set('_pk',m.args.join(' '));
    await py.loadPackage('micropip');await py.runPythonAsync('import micropip\nawait micropip.install(_pk.split())');out('Installed: '+m.args.join(' ')+' (cleared when Python restarts)\n','ok');
   }
- }catch(e){out(String(e&&e.message||e)+'\n','err');st='error'}
+ }catch(e){if(m.type==='check'){busy=false;post('check-done',{fatal:String(e&&e.message||e)});return}out(String(e&&e.message||e)+'\n','err');st='error'}
  flush();busy=false;post('done',{st,ms:performance.now()-t0});
 };
 </script>
@@ -337,6 +360,74 @@ def run_file(name, args_json):
         except BaseException: pass
         if old is not None: sys.modules['__main__'] = old
     return status
+
+def source_signature(source):
+    import tokenize, hashlib
+    try:
+        compile(source, '<practice-signature>', 'exec')
+    except (SyntaxError, IndentationError, TabError):
+        return None
+    try:
+        parts, depth = [], 0
+        for tok in tokenize.generate_tokens(io.StringIO(source).readline):
+            t, s = tok.type, tok.string
+            if t in (tokenize.COMMENT, tokenize.NL, tokenize.ENDMARKER):
+                continue
+            if t == tokenize.INDENT:
+                depth += 1
+                parts.append(['INDENT', depth])
+            elif t == tokenize.DEDENT:
+                parts.append(['DEDENT', depth])
+                depth = max(0, depth - 1)
+            elif t == tokenize.NEWLINE:
+                parts.append(['NEWLINE'])
+            elif t in (tokenize.NAME, tokenize.NUMBER, tokenize.STRING, tokenize.OP):
+                parts.append([tokenize.tok_name[t], s])
+            elif t == tokenize.ERRORTOKEN:
+                if not s.isspace():
+                    parts.append(['ERRORTOKEN', s])
+        raw = json.dumps(parts, ensure_ascii=False, separators=(',', ':')).encode('utf-8')
+        return hashlib.sha256(raw).hexdigest()
+    except (tokenize.TokenError, IndentationError, SyntaxError):
+        return None
+
+def check_case(source, inputs_json):
+    queue = [str(x) for x in json.loads(inputs_json)]
+    captured_out, captured_err = io.StringIO(), io.StringIO()
+    old_stdout, old_stderr, old_stdin = sys.stdout, sys.stderr, sys.stdin
+    old_argv, old_cwd = list(sys.argv), os.getcwd()
+    builtins_snapshot = dict(builtins.__dict__)
+    def silent_input(prompt=''):
+        if not queue:
+            raise EOFError('Self-check input exhausted')
+        return queue.pop(0)
+    result = {'ran': False, 'stdout': '', 'stderr': '', 'errorType': None, 'error': None}
+    try:
+        sys.stdout, sys.stderr = captured_out, captured_err
+        builtins.input = silent_input
+        sys.argv = ['practice.py']
+        main = {'__name__': '__main__', '__file__': 'practice.py'}
+        code = compile(source, 'practice.py', 'exec')
+        exec(code, main)
+        result['ran'] = True
+    except BaseException as e:
+        result['errorType'] = type(e).__name__
+        result['error'] = str(e)
+    finally:
+        result['stdout'] = captured_out.getvalue()
+        result['stderr'] = captured_err.getvalue()
+        sys.stdout, sys.stderr, sys.stdin = old_stdout, old_stderr, old_stdin
+        sys.argv = old_argv
+        try: os.chdir(old_cwd)
+        except BaseException: pass
+        for key in list(builtins.__dict__.keys()):
+            if key not in builtins_snapshot:
+                try: del builtins.__dict__[key]
+                except BaseException: pass
+        for key, value in builtins_snapshot.items():
+            try: builtins.__dict__[key] = value
+            except BaseException: pass
+    return json.dumps(result, ensure_ascii=False)
 </script>
 <script>
 'use strict';
@@ -437,9 +528,9 @@ function tabs(){const b=$('tabs');b.replaceChildren();for(const n in files){cons
 $('tabs').addEventListener('keydown',e=>{const k=Object.keys(files),i=k.indexOf(active);const j={ArrowRight:i+1,ArrowLeft:i-1,Home:0,End:k.length-1}[e.key];if(j===undefined)return;e.preventDefault();switchFile(k[(j+k.length)%k.length]);$('tabs').querySelector('[aria-selected=true]').focus()});
 function newFile(){let n='untitled.py',i=2;while(n in files)n='untitled_'+i+++'.py';persist();files[n]='';active=n;showFile();persist();$('fname').focus();$('fname').select();toast('Name your file, then press Enter')}
 function rename(){const n=$('fname').value.trim();if(n===active)return;if(!okName(n)){toast('Use a filename without slashes.');$('fname').value=active;return}if(n in files){toast('That name is taken.');$('fname').value=active;return}
- persist();files[n]=files[active];delete files[active];if(docs[active]){docs[n]=docs[active];delete docs[active];if(cm)cm.setOption('mode',n.endsWith('.py')?'python':null)}active=n;persist();tabs();$('etype').textContent=n.endsWith('.py')?'Python':'Text';toast('Renamed. Python sees the new name on the next run.')}
+ const oldName=active;persist();files[n]=files[active];delete files[active];if(docs[active]){docs[n]=docs[active];delete docs[active];if(cm)cm.setOption('mode',n.endsWith('.py')?'python':null)}active=n;persist();tabs();$('etype').textContent=n.endsWith('.py')?'Python':'Text';window.dispatchEvent(new CustomEvent('atelier:file-renamed',{detail:{oldName,newName:n}}));toast('Renamed. Python sees the new name on the next run.')}
 $('fname').onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();rename();ed.focus()}else if(e.key==='Escape'){e.target.value=active;ed.focus()}};$('fname').onblur=rename;
-$('del').onclick=()=>{if(!confirm('Delete "'+active+'" from your editor files? This cannot be undone.'))return;delete files[active];delete docs[active];if(!Object.keys(files).length)files['main.py']='';active=Object.keys(files)[0];showFile();persist()};
+$('del').onclick=()=>{if(!confirm('Delete "'+active+'" from your editor files? This cannot be undone.'))return;const deletedName=active;delete files[active];delete docs[active];if(!Object.keys(files).length)files['main.py']='';active=Object.keys(files)[0];showFile();persist();window.dispatchEvent(new CustomEvent('atelier:file-deleted',{detail:{fileName:deletedName}}))};
 $('openb').onclick=()=>$('filef').click();
 $('filef').onchange=async e=>{let last=null,c=0;for(const f of e.target.files){if(!okName(f.name)||f.size>2e6){toast('Skipped '+f.name+' (bad name or over 2 MB).');continue}let n=f.name,i=2;while(n in files){const d=f.name.lastIndexOf('.');n=(d>0?f.name.slice(0,d):f.name)+'_'+i+++(d>0?f.name.slice(d):'')}
  try{files[n]=await f.text();last=n;c++}catch{toast('Could not read '+f.name)}}e.target.value='';if(last){persist();active=last;showFile();persist();toast(c+' file'+(c>1?'s':'')+' imported')}};
@@ -530,7 +621,7 @@ $('coachapply').onclick=()=>{if(!coach.file||!coach.line||!coach.replacement)ret
 /* ---------- Python runtime lifecycle ---------- */
 const rt={w:null,st:'loading',cur:0,seq:0,synced:new Map(),waiting:false,stopping:false,after:'ready',ver:'',t0:0,first:true};
 const busy=()=>rt.st==='running'||rt.st==='input'||rt.st==='stopping';
-function status(st,label){rt.st=st;$('eng').dataset.s=st;$('engl').textContent=label;sync()}
+function status(st,label){rt.st=st;$('eng').dataset.s=st;$('engl').textContent=label;sync();window.dispatchEvent(new CustomEvent('atelier:runtime-status',{detail:{status:st,label}}))}
 function sync(){const b=busy(),s=rt.st,can=s==='ready'||s==='stopped'||s==='error';$('run').disabled=!can;$('run').textContent=s==='error'?'↻ Retry':'▶ Run';$('stop').hidden=!b;
  const mb=$('mrun');if(mb){mb.disabled=!(can||b);mb.textContent=b?'■ Stop':s==='error'?'↻ Retry':'▶ Run';mb.classList.toggle('danger',b)}
  const inp=s==='input';$('cf').dataset.m=inp?'input':'cmd';$('pr').textContent=inp?'INPUT':'❯';$('cil').textContent=inp?'Answer for input()':'Console command';
@@ -556,6 +647,7 @@ function boot(label){
  w.onmessage=({data:m})=>{if(rt.w!==w)return;onMsg(m)};
  w.postMessage({type:'init',cdn:CDN,py:$('psrc').textContent,ctl:rt.ctl&&rt.ctl.buffer,data:rt.data&&rt.data.buffer,intr:rt.intr&&rt.intr.buffer})}
 function onMsg(m){
+ if(window.AtelierCheckBridge&&window.AtelierCheckBridge.handle(m))return;
  if(m.type==='ready'){clearTimeout(rt.bt);rt.ver=m.v;const s=rt.after;rt.after='ready';status(s,s==='stopped'?'Stopped · Python '+m.v+' ready':'Ready · Python '+m.v);
   if(rt.first){rt.first=false;write('POMEGRANATE × LILY / PYTHON ATELIER\n','cmd');write(iso?'Ready. Press Run — input() prompts appear here and you answer in the box below.\n\n':'Ready in fallback input mode. Live terminal input is unavailable in this browser session — see ⚙ Help.\n\n','info')}return}
  if(m.type==='fatal'){clearTimeout(rt.bt);rt.w.terminate();status('error','Python failed to load');write(m.message+'\nCheck your connection, then press Retry. Your files are safe.\n','err');return}
@@ -628,6 +720,10 @@ if(!iso){$('prep').hidden=false;$('prep').open=true;$('fst').textContent='Runs i
 if(!saveOK)setSaved('⚠ NOT saved — browser storage is blocked. Export your files.',true);
 boot();enhance();
 </script>
+<script src="./workbench-bridge.js"></script>
+<script src="./challenges.js"></script>
+<script src="./learning-storage.js"></script>
+<script src="./learning.js"></script>
 </body>
 </html>
 
