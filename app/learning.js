@@ -173,7 +173,7 @@
     const runtimeReady = window.AtelierAPI?.canSelfCheck?.() === true;
     const checkDisabled = checking || !runtimeReady;
     const currentSource = rec.fileName && window.AtelierAPI?.getFileSource?.(rec.fileName);
-    const stale = last?.outcome === 'passed' && typeof currentSource === 'string' && currentSource !== last.sourceSnapshot && rec.status !== 'completed';
+    const stale = last?.outcome === 'passed' && typeof currentSource === 'string' && currentSource !== last.sourceSnapshot;
 
     let checkBox = '';
     if (last) {
@@ -183,7 +183,7 @@
       if (last.firstVisibleCase && last.outcome !== 'passed') {
         checkBox += '<div class="check-grid"><div><small>Expected</small><code>' + escapeHTML(last.firstVisibleCase.expected) + '</code></div><div><small>Actual</small><code>' + escapeHTML(last.firstVisibleCase.actual) + '</code></div></div>';
       }
-      if (stale) checkBox += '<p><strong>Source changed after this passing check.</strong> Check the current code again before completion.</p>';
+      if (stale) checkBox += rec.status === 'completed' ? '<p><strong>Current source changed since this check.</strong> Historical completion remains intact.</p>' : '<p><strong>Source changed after this passing check.</strong> Check the current code again before completion.</p>';
       checkBox += '</div>';
     }
 
@@ -233,7 +233,8 @@
     const challenge = Challenges.byId[challengeId];
     let rec = getRecord(challengeId);
     let fileName = rec.fileName;
-    if (!fileName || !AtelierAPI.hasFile(fileName)) {
+    const createdFresh = !fileName || !AtelierAPI.hasFile(fileName);
+    if (createdFresh) {
       fileName = AtelierAPI.createPracticeFile(challenge.preferredFileName, challenge.starterCode);
     } else {
       AtelierAPI.openFile(fileName);
@@ -242,7 +243,14 @@
       const result = await Store.mutate(draft => {
         const current = draft.challenges[challengeId] || defaultRecord();
         current.fileName = fileName;
-        if (current.status !== 'completed' && current.status === 'not_started') current.status = 'in_progress';
+        if (createdFresh) {
+          current.lastCheck = null;
+          current.lastNeedsRevision = null;
+          current.pendingDebugRecovery = null;
+          if (current.status !== 'completed') current.status = 'in_progress';
+        } else if (current.status !== 'completed' && current.status === 'not_started') {
+          current.status = 'in_progress';
+        }
         draft.challenges[challengeId] = current;
         return fileName;
       });
@@ -491,9 +499,15 @@
 
     for (const challenge of Challenges.challenges) {
       const rec = getRecord(challenge.id);
-      const lastLabel = rec.lastCheck
-        ? (rec.lastCheck.outcome === 'passed' ? 'Self-Check Passed' : rec.lastCheck.outcome === 'needs_revision' ? 'Needs Revision' : 'Check inconclusive')
-        : 'Not checked';
+      const currentSource = rec.fileName ? window.AtelierAPI?.getFileSource?.(rec.fileName) : null;
+      const checkIsStale = rec.lastCheck?.outcome === 'passed' && typeof currentSource === 'string' && currentSource !== rec.lastCheck.sourceSnapshot;
+      const lastLabel = !rec.fileName
+        ? (rec.completedSnapshot ? 'Current work unavailable' : 'Not checked')
+        : checkIsStale
+          ? 'Current code changed since last check'
+          : rec.lastCheck
+            ? (rec.lastCheck.outcome === 'passed' ? 'Self-Check Passed' : rec.lastCheck.outcome === 'needs_revision' ? 'Needs Revision' : 'Check inconclusive')
+            : 'Not checked';
       html += '<article class="record-card"><div class="record-head"><div><h3>' + escapeHTML(challenge.title) + '</h3><div class="record-meta">Current code: ' + escapeHTML(lastLabel) + (rec.completedAt ? ' · Completed ' + escapeHTML(new Date(rec.completedAt).toLocaleString()) : '') + '</div></div>' + statusPill(rec.status) + '</div>' +
         (rec.reflection ? '<div class="record-reflection"><strong>Learner-submitted reflection</strong><br>' + escapeHTML(rec.reflection) + '</div>' : '') +
         '<div class="learning-actions" style="margin-top:9px">' +
