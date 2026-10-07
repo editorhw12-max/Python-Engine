@@ -11,7 +11,7 @@
       exampleInput: ['Maya'],
       expectedBehavior: 'For Maya, print exactly: Hello, Maya.',
       preferredFileName: 'practice_name_greeting.py',
-      starterCode: '# Name Greeting\\n# Ask for a name, then print only the greeting.\\n\\n',
+      starterCode: '# Name Greeting\n# Ask for a name, then print only the greeting.\n\n',
       hints: [
         'input() returns text. Store that text in a variable so you can use it again.',
         'Your program needs one input() call and one final greeting printed from the value you saved.',
@@ -52,7 +52,7 @@
       exampleInput: ['50', '20'],
       expectedBehavior: 'For bill 50 and tip percentage 20, print exactly: Tip: $10.00',
       preferredFileName: 'practice_tip_calculator.py',
-      starterCode: '# Tip Calculator\\n# Ask for bill amount and tip percentage.\\n\\n',
+      starterCode: '# Tip Calculator\n# Ask for bill amount and tip percentage.\n\n',
       hints: [
         'input() gives you strings. Arithmetic needs numeric values, so convert each input first.',
         'The tip is bill multiplied by percentage, then divided by 100.',
@@ -96,7 +96,7 @@
       exampleInput: ['HELLO, WORLD'],
       expectedBehavior: 'Print: hello, world',
       preferredFileName: 'practice_indoor_voice.py',
-      starterCode: '# Indoor Voice\\n# Read one line and print it in lowercase.\\n\\n',
+      starterCode: '# Indoor Voice\n# Read one line and print it in lowercase.\n\n',
       hints: [
         'Python strings have methods that return transformed versions of the text.',
         'Look for a string method whose name describes making letters lowercase.',
@@ -138,7 +138,7 @@
       exampleInput: ['This is CS50'],
       expectedBehavior: 'Print: This...is...CS50',
       preferredFileName: 'practice_playback_speed.py',
-      starterCode: '# Playback Speed\\n# Replace every space with three periods.\\n\\n',
+      starterCode: '# Playback Speed\n# Replace every space with three periods.\n\n',
       hints: [
         'A string method can replace every occurrence of one piece of text with another.',
         'The thing you are replacing is one normal space. The replacement is "...".',
@@ -180,7 +180,7 @@
       exampleInput: ['cat.GIF'],
       expectedBehavior: 'Print: image/gif',
       preferredFileName: 'practice_file_extension.py',
-      starterCode: '# File Extension\\n# Normalize the filename, then choose the MIME type.\\n\\n',
+      starterCode: '# File Extension\n# Normalize the filename, then choose the MIME type.\n\n',
       hints: [
         'Normalize the filename first so capitalization and extra outside spaces do not affect your conditions.',
         'After normalization, check which supported extension the filename ends with.',
