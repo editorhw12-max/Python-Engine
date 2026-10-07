@@ -33,6 +33,50 @@
 .practice-section p{margin:0;color:#d8cbd1}
 .practice-example{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
 .practice-example pre{margin:0;min-height:70px;padding:10px;border:1px solid var(--line);border-radius:10px;background:#0e0a0d;color:#eadfd9;font:12px/1.5 var(--mono);white-space:pre-wrap}
+.practice-example-box{border:1px solid var(--line);border-radius:10px;background:#0e0a0d;overflow:hidden}
+.practice-example-box .example-label{display:block;padding:8px 10px 0;color:var(--gold);font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase}
+.practice-example-box pre{border:0!important;border-radius:0!important;background:transparent!important;min-height:54px!important;padding-top:6px!important}
+.decoder-section{padding-top:16px}
+.assignment-decoder{border:1px solid #dbb97d4a;border-radius:15px;background:linear-gradient(180deg,#24171d,#171013);overflow:hidden;box-shadow:inset 0 1px 0 #ffffff08}
+.decoder-open{padding:16px}
+.decoder-title{margin-bottom:12px}
+.decoder-title h3{margin:4px 0 0!important;color:#f0e5e8!important;font:20px/1.2 Georgia,"Times New Roman",serif!important;letter-spacing:0!important;text-transform:none!important}
+.assignment-decoder summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px;min-height:52px}
+.assignment-decoder summary::-webkit-details-marker{display:none}
+.assignment-decoder summary>span:first-child{display:grid;gap:3px}
+.assignment-decoder summary strong{font-size:14px;color:#f0e5e8}
+.assignment-decoder[open] summary{border-bottom:1px solid var(--line)}
+.assignment-decoder[open] summary>span:last-child{transform:rotate(45deg)}
+.decoder-body{display:grid;gap:12px}
+details.assignment-decoder .decoder-body{padding:14px 16px 16px}
+.decoder-label{display:block;margin-bottom:4px;color:var(--gold);font-size:9px;font-weight:800;letter-spacing:1.15px;text-transform:uppercase}
+.decoder-plain,.decoder-academic,.decoder-example,.decoder-now{border:1px solid var(--line);border-radius:12px;padding:12px;background:#ffffff04}
+.decoder-plain{border-color:#8db49c45;background:#18312622}
+.decoder-plain p{font-size:15px!important;line-height:1.55!important;color:#f1e9ec!important}
+.decoder-academic p{font-style:italic;color:#cdbfc4!important}
+.decoder-translation{display:grid;gap:7px}
+.decoder-row{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr) 28px minmax(0,1fr);align-items:center;gap:7px;padding:10px;border:1px solid var(--line);border-radius:11px;background:#0f0a0d}
+.decoder-row strong{display:block;font-size:12px;line-height:1.4;color:#eadce2}
+.decoder-row span:not(.decoder-label){font-size:12px;line-height:1.4;color:#cdbfc4}
+.decoder-row code,.decoder-line code{display:block;white-space:pre-wrap;overflow-wrap:anywhere;font:11px/1.45 var(--mono);color:#f0d6a5}
+.decoder-arrow{text-align:center;color:var(--gold);font-size:18px}
+.decoder-example-head{margin-bottom:9px}
+.decoder-example-head strong{display:block;font:17px/1.25 Georgia,"Times New Roman",serif;color:#f0e5e8}
+.decoder-example-head p{margin-top:5px!important;color:var(--mut)!important;font-size:12px!important}
+.decoder-example>pre{margin:0 0 10px;padding:11px;border:1px solid var(--line);border-radius:10px;background:#0d090c;color:#f0d6a5;font:11px/1.5 var(--mono);white-space:pre-wrap;overflow:auto}
+.decoder-lines{display:grid;gap:7px}
+.decoder-line{display:grid;grid-template-columns:minmax(190px,.9fr) minmax(0,1.1fr);gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.decoder-line:first-child{border-top:0}
+.decoder-line p{margin:0!important;font-size:11px!important;color:#cdbfc4!important}
+.decoder-now{display:flex;flex-direction:column;gap:3px;border-color:#922f4a55;background:#922f4a12}
+.decoder-now strong{color:#f4d6dc}
+.decoder-now span{font-size:11px;color:#cdbfc4}
+.decoder-on-demand{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px;border:1px dashed #dbb97d55;border-radius:12px;background:#ffffff03}
+.decoder-on-demand>p{font-size:12px!important;max-width:650px}
+.decoder-on-demand>button{flex:0 0 auto}
+.decoder-on-demand #decoderHidden{width:100%}
+.decoder-on-demand:has(#decoderHidden:not([hidden])){display:block}
+.decoder-on-demand:has(#decoderHidden:not([hidden]))>p{margin-bottom:10px}
 .hintbox,.checkbox{margin-top:10px;padding:11px;border:1px solid var(--line);border-radius:11px;background:#120d11}
 .hintbox strong,.checkbox strong{display:block;color:var(--gold);font-size:11px;margin-bottom:5px}
 .check-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
@@ -92,6 +136,11 @@ body.coding .productnav{display:none!important}
  .learning-head h1{font-size:25px}
  .learning-grid,.garden-layout{grid-template-columns:1fr}
  .practice-example,.check-grid{grid-template-columns:1fr}
+ .decoder-row{grid-template-columns:1fr;gap:5px}
+ .decoder-arrow{transform:rotate(90deg);font-size:14px;line-height:1}
+ .decoder-line{grid-template-columns:1fr}
+ .decoder-on-demand{align-items:stretch;flex-direction:column}
+ .decoder-on-demand>button{width:100%}
  .seed-summary{grid-template-columns:1fr 1fr 1fr}
  .seed-stat{padding:9px}
  .seed-stat strong{font-size:19px}
@@ -101,6 +150,8 @@ body.coding .productnav{display:none!important}
  .seed-summary{grid-template-columns:1fr}
  .learning-actions>*{flex:1 1 auto}
  .practice-detail{padding:14px}
+ .decoder-open{padding:12px}
+ .assignment-decoder summary{padding:12px}
 }
 @media(prefers-reduced-motion:reduce){
  .progress-fill,.garden-grow{animation:none!important;transition:none!important}

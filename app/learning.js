@@ -77,6 +77,52 @@
     return '<span class="status-pill" data-status="' + status + '">' + escapeHTML(statusLabels[status] || status) + '</span>';
   }
 
+  function renderDecoderBody(layer) {
+    const rows = layer.translationKey.map(item =>
+      '<div class="decoder-row">' +
+        '<div><span class="decoder-label">Assignment phrase</span><strong>' + escapeHTML(item.jargon) + '</strong></div>' +
+        '<div class="decoder-arrow" aria-hidden="true">→</div>' +
+        '<div><span class="decoder-label">What it means</span><span>' + escapeHTML(item.concept) + '</span></div>' +
+        '<div class="decoder-arrow" aria-hidden="true">→</div>' +
+        '<div><span class="decoder-label">Python clue</span><code>' + escapeHTML(item.syntax) + '</code></div>' +
+      '</div>'
+    ).join('');
+
+    const exampleLines = layer.parallelExample.lineByLine.map(line =>
+      '<div class="decoder-line">' +
+        '<code>' + escapeHTML(line.code) + '</code>' +
+        '<p>' + escapeHTML(line.explanation) + '</p>' +
+      '</div>'
+    ).join('');
+
+    return '<div class="decoder-body">' +
+      '<div class="decoder-plain"><span class="decoder-label">What they are asking you to do</span><p>' + escapeHTML(layer.plainEnglish) + '</p></div>' +
+      '<div class="decoder-academic"><span class="decoder-label">How an instructor might say the same thing</span><p>“' + escapeHTML(layer.academicJargon) + '”</p></div>' +
+      '<div class="decoder-translation"><span class="decoder-label">Translate the technical sentence</span>' + rows + '</div>' +
+      '<div class="decoder-example"><div class="decoder-example-head"><span class="decoder-label">Worked parallel example — same pattern, different problem</span><strong>' + escapeHTML(layer.parallelExample.title) + '</strong><p>' + escapeHTML(layer.parallelExample.taskDescription) + '</p></div>' +
+        '<pre>' + escapeHTML(layer.parallelExample.code) + '</pre>' +
+        '<div class="decoder-lines">' + exampleLines + '</div>' +
+      '</div>' +
+      '<div class="decoder-now"><strong>Now solve your challenge.</strong><span>The example above uses the same coding pattern on a different topic so you can transfer the idea instead of copying the answer.</span></div>' +
+    '</div>';
+  }
+
+  function renderAssignmentDecoder(challenge) {
+    const layer = challenge.translationLayer;
+    if (!layer) return '';
+
+    const body = renderDecoderBody(layer);
+    if (layer.scaffoldMode === 'always_expanded') {
+      return '<div class="practice-section decoder-section"><div class="assignment-decoder decoder-open"><div class="decoder-title"><span class="learning-kicker">Assignment Decoder</span><h3>Learn how to read the assignment</h3></div>' + body + '</div></div>';
+    }
+
+    if (layer.scaffoldMode === 'collapsible') {
+      return '<div class="practice-section decoder-section"><details class="assignment-decoder"><summary><span><span class="learning-kicker">Assignment Decoder</span><strong>Break down the wording</strong></span><span aria-hidden="true">＋</span></summary>' + body + '</details></div>';
+    }
+
+    return '<div class="practice-section decoder-section"><div class="decoder-on-demand"><p><strong>Stuck on the wording?</strong> Try translating the assignment yourself first. If the technical language is the blocker, open the decoder.</p><button type="button" class="quiet" id="decoderReveal">Decode Assignment</button><div id="decoderHidden" hidden><div class="assignment-decoder decoder-open">' + body + '</div></div></div></div>';
+  }
+
   function showToast(message) {
     if (typeof window.toast === 'function') window.toast(message);
     else {
@@ -190,8 +236,9 @@
     return '<section class="practice-detail">' +
       '<div class="challenge-top"><div><button type="button" class="tiny quiet" id="practiceBack">← All challenges</button><div class="learning-kicker" style="margin-top:10px">CS50P Foundations</div><h2>' + escapeHTML(challenge.title) + '</h2></div>' + statusPill(rec.status) + '</div>' +
       '<div class="practice-section"><h3>Challenge</h3><p>' + escapeHTML(challenge.instructions) + '</p></div>' +
+      renderAssignmentDecoder(challenge) +
       '<div class="practice-section"><h3>What You Are Practicing</h3><p>' + escapeHTML(challenge.practice) + '</p><div class="challenge-concepts" style="margin-top:8px">' + challenge.concepts.map(x => '<span>' + escapeHTML(x) + '</span>').join('') + '</div></div>' +
-      '<div class="practice-section"><h3>Example</h3><div class="practice-example"><pre>Input\\n' + escapeHTML(challenge.exampleInput.join('\\n')) + '</pre><pre>Expected behavior\\n' + escapeHTML(challenge.expectedBehavior) + '</pre></div></div>' +
+      '<div class="practice-section"><h3>Example</h3><div class="practice-example"><div class="practice-example-box"><span class="example-label">Input</span><pre>' + escapeHTML(challenge.exampleInput.join('\n')) + '</pre></div><div class="practice-example-box"><span class="example-label">Expected behavior</span><pre>' + escapeHTML(challenge.expectedBehavior) + '</pre></div></div></div>' +
       '<div class="practice-section"><div class="learning-actions">' +
         '<button type="button" class="primary" id="openChallengeWork">' + (rec.fileName ? 'Reopen Workbench' : 'Start Challenge') + '</button>' +
         '<button type="button" id="runChallenge" ' + (!rec.fileName ? 'disabled' : '') + '>▶ Run</button>' +
@@ -218,6 +265,15 @@
       hintIndex = Math.min(hintIndex + 1, 3);
       $('hintArea').innerHTML = '<div class="hintbox"><strong>Hint ' + hintIndex + ' of 3</strong>' + escapeHTML(challenge.hints[hintIndex - 1]) + '</div>';
     };
+    const decoderReveal = $('decoderReveal');
+    const decoderHidden = $('decoderHidden');
+    if (decoderReveal && decoderHidden) {
+      decoderReveal.onclick = () => {
+        decoderHidden.hidden = false;
+        decoderReveal.hidden = true;
+        decoderHidden.querySelector('.assignment-decoder')?.focus?.();
+      };
+    }
     const reflection = $('reflectionField');
     const count = $('reflectionCount');
     reflection.oninput = () => {
