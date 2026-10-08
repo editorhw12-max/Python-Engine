@@ -118,6 +118,214 @@
     }
   ];
 
+
+  // Assignment Decoder teaching copy; never changes grading or learner code.
+  const translationLayers = {
+    "name-greeting": {
+      "scaffoldMode": "always_expanded",
+      "plainEnglish": "Ask for someone's name. Remember their answer, then print a greeting that includes their name and ends with a period.",
+      "academicJargon": "Prompt for user input, assign the returned string to a variable, and interpolate that variable into printed output.",
+      "translationKey": [
+        {
+          "jargon": "Prompt the user",
+          "concept": "Ask a question and wait for typed text.",
+          "syntax": "input(...)"
+        },
+        {
+          "jargon": "Store input in a variable",
+          "concept": "Give the answer a reusable name.",
+          "syntax": "name = input(...)"
+        },
+        {
+          "jargon": "Output",
+          "concept": "Display a line in the terminal.",
+          "syntax": "print(...)"
+        },
+        {
+          "jargon": "Interpolate",
+          "concept": "Put the saved value inside a formatted message.",
+          "syntax": "f\"...{name}...\""
+        }
+      ],
+      "steps": [
+        "Ask for one text answer.",
+        "Save it in a variable.",
+        "Print one greeting using that value and the required punctuation."
+      ],
+      "parallelExample": {
+        "topic": "Introduce a pet, not a person.",
+        "code": "pet = input(\"Pet's name: \")\nprint(f\"Meet {pet}.\")",
+        "lineNotes": [
+          "One input call stores the reply.",
+          "One formatted print uses the stored text and a final period."
+        ],
+        "connection": "Identical flow: one input, one assigned variable, one formatted print."
+      }
+    },
+    "tip-calculator": {
+      "scaffoldMode": "on_demand",
+      "plainEnglish": "Ask separately for the bill and tip percentage, turn both answers into numbers, calculate the tip, and print it with two decimal places.",
+      "academicJargon": "Read two numeric inputs, convert each to float, compute the percentage of the base, and format output to two decimal places.",
+      "translationKey": [
+        {
+          "jargon": "Numeric input",
+          "concept": "Typed numbers start as text.",
+          "syntax": "input(...)"
+        },
+        {
+          "jargon": "Convert to float",
+          "concept": "Make input usable in decimal arithmetic.",
+          "syntax": "float(input(...))"
+        },
+        {
+          "jargon": "Percentage",
+          "concept": "Multiply a base by the percent, then divide by 100.",
+          "syntax": "base * percent / 100"
+        },
+        {
+          "jargon": "Two decimal places",
+          "concept": "Display dollars and cents, including trailing zeroes.",
+          "syntax": ":.2f"
+        }
+      ],
+      "steps": [
+        "Read the bill and percentage separately.",
+        "Convert both inputs to numbers.",
+        "Calculate the percentage of the bill.",
+        "Print only the requested label and a two-decimal result."
+      ],
+      "parallelExample": {
+        "topic": "Calculate a discount amount instead of a tip.",
+        "code": "price = float(input(\"Price: \"))\ndiscount_rate = float(input(\"Discount percent: \"))\ndiscount = price * discount_rate / 100\nprint(f\"Discount: ${discount:.2f}\")",
+        "lineNotes": [
+          "Read and convert the base price.",
+          "Read and convert a percent.",
+          "Multiply and divide to get that percentage of the price.",
+          "Print a result formatted to two decimals."
+        ],
+        "connection": "Same structure: two float(input(...)) calls, one percentage calculation, one formatted print."
+      }
+    },
+    "indoor-voice": {
+      "scaffoldMode": "on_demand",
+      "plainEnglish": "Read one line of text, change its uppercase letters to lowercase, and print the new text.",
+      "academicJargon": "Read a string, apply its lowercase conversion method, then output the transformed string.",
+      "translationKey": [
+        {
+          "jargon": "String",
+          "concept": "Text returned by input().",
+          "syntax": "input(...)"
+        },
+        {
+          "jargon": "Lowercase conversion",
+          "concept": "Make a new version of text with lowercase letters.",
+          "syntax": ".lower()"
+        },
+        {
+          "jargon": "Output",
+          "concept": "Show the transformed text, not an explanation.",
+          "syntax": "print(...)"
+        }
+      ],
+      "steps": [
+        "Save one line of input.",
+        "Apply the string's lowercase method.",
+        "Print only the returned text."
+      ],
+      "parallelExample": {
+        "topic": "Normalize a shelf label instead of a spoken phrase.",
+        "code": "label = input(\"Shelf label: \")\nprint(label.lower())",
+        "lineNotes": [
+          "One input call saves text.",
+          "One lowercase method and one print produce the output."
+        ],
+        "connection": "Same structure: input assignment, one .lower() call, one print."
+      }
+    },
+    "playback-speed": {
+      "scaffoldMode": "on_demand",
+      "plainEnglish": "Read a sentence and replace every normal space with three periods, then print the changed sentence.",
+      "academicJargon": "Read a string, perform global substring substitution using replace(), then output the transformed string.",
+      "translationKey": [
+        {
+          "jargon": "Substring substitution",
+          "concept": "Swap each occurrence of one exact string for another.",
+          "syntax": ".replace(old, new)"
+        },
+        {
+          "jargon": "Ordinary space",
+          "concept": "The single space character.",
+          "syntax": "\" \""
+        },
+        {
+          "jargon": "Output",
+          "concept": "Print the changed text.",
+          "syntax": "print(...)"
+        }
+      ],
+      "steps": [
+        "Read a sentence.",
+        "Replace the specified character with the specified three-character replacement.",
+        "Print only the result."
+      ],
+      "parallelExample": {
+        "topic": "Reformat an ingredient list instead of slowing a sentence.",
+        "code": "ingredients = input(\"Comma-separated ingredients: \")\nprint(ingredients.replace(\",\", \" / \"))",
+        "lineNotes": [
+          "Save one line of text.",
+          "Replace each comma with a separator and print."
+        ],
+        "connection": "Same structure: input assignment, one replace() call, one print."
+      }
+    },
+    "file-extension": {
+      "scaffoldMode": "on_demand",
+      "plainEnglish": "Read a filename, ignore spaces around it and capitalization, inspect its ending, and print the matching type or the default type.",
+      "academicJargon": "Normalize with strip() and lower(), then use ordered if/elif/else branches and endswith() checks to choose a MIME type.",
+      "translationKey": [
+        {
+          "jargon": "Normalize",
+          "concept": "Make comparisons consistent regardless of outer spaces and capitalization.",
+          "syntax": ".strip().lower()"
+        },
+        {
+          "jargon": "Extension",
+          "concept": "Recognize a particular ending.",
+          "syntax": ".endswith(\".pdf\")"
+        },
+        {
+          "jargon": "Conditional",
+          "concept": "Choose one outcome through if/elif/else.",
+          "syntax": "if ...: / elif ...: / else:"
+        },
+        {
+          "jargon": "MIME type",
+          "concept": "An exact file type label you must print.",
+          "syntax": "print(\"...\")"
+        }
+      ],
+      "steps": [
+        "Read and normalize the filename.",
+        "Compare its ending to the accepted endings.",
+        "Treat the two JPEG endings as one output choice.",
+        "Print exactly one matching type, otherwise print the default."
+      ],
+      "parallelExample": {
+        "topic": "Classify package route tags, not files.",
+        "code": "tag = input(\"Package tag: \").strip().lower()\nif tag.endswith(\"-air\"):\n    print(\"route/air\")\nelif tag.endswith(\"-road\") or tag.endswith(\"-land\"):\n    print(\"route/ground\")\nelif tag.endswith(\"-sea\"):\n    print(\"route/sea\")\nelif tag.endswith(\"-fragile\"):\n    print(\"route/fragile\")\nelif tag.endswith(\"-heavy\"):\n    print(\"route/heavy\")\nelif tag.endswith(\"-express\"):\n    print(\"route/express\")\nelse:\n    print(\"route/unknown\")",
+        "lineNotes": [
+          "Normalize the typed tag.",
+          "Try the first ending.",
+          "A second branch accepts two endings.",
+          "Check the remaining four endings.",
+          "Use the else fallback when none matched."
+        ],
+        "connection": "Same flow and method counts: one input, strip(), lower(), seven endswith() calls across six branches, and one else fallback."
+      }
+    }
+  };
+  challenges.forEach(challenge => { challenge.translationLayer = translationLayers[challenge.id]; });
+
   const byId = Object.fromEntries(challenges.map(challenge => [challenge.id, Object.freeze(challenge)]));
   window.AtelierChallenges = Object.freeze({
     pathId: 'cs50p-foundations',

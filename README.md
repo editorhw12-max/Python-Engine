@@ -6,6 +6,7 @@ Python Atelier is a mobile-first, browser-based Python workbench with a real Pyo
 
 - **Workbench** — write, run, debug, import, export, and autosave real Python files.
 - **Atelier Practice** — five CS50P Foundations challenges with bounded hints, controlled self-checks, and learner reflection.
+- **Assignment Decoder** — built into each of the five Practice challenges: original instructions, plain-English translation, terminology map, step-by-step plan, and a separate-topic worked example with matching control flow and method counts. Worked examples never overwrite learner files or change grading.
 - **Seeds** — once-only rewards for challenge completion, required reflection, and eligible debugging recovery.
 - **Atelier Garden** — an optional SVG/CSS pomegranate plant grown by investing earned Seeds.
 - **Practice Record** — local challenge history, completion snapshots, reflections, Seed accounting, and JSON backup.

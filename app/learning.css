@@ -105,3 +105,22 @@ body.coding .productnav{display:none!important}
 @media(prefers-reduced-motion:reduce){
  .progress-fill,.garden-grow{animation:none!important;transition:none!important}
 }
+/* Assignment Decoder is part of the existing Practice challenge screen. */
+.assignment-decoder{border:1px solid #dbb97d42;border-radius:12px;padding:14px!important;margin:10px 0;background:#1c1518}
+.assignment-decoder h3{color:var(--gold);margin:0 0 7px}
+.assignment-decoder h4{font-size:12px;letter-spacing:.3px;color:#eed4a4;margin:15px 0 5px}
+.assignment-decoder p{font-size:13px;line-height:1.55;white-space:normal;overflow-wrap:anywhere}
+.assignment-decoder .decoder-intro{color:var(--mut);margin-bottom:10px}
+.decoder-glossary{display:grid;gap:8px;margin:10px 0 0}
+.decoder-term{display:grid;grid-template-columns:minmax(100px,.7fr) minmax(0,1.3fr);gap:9px;border:1px solid var(--line);border-radius:9px;padding:9px;background:#130e12}
+.decoder-term dt{font-size:12px;font-weight:700;color:var(--gold)}
+.decoder-term dd{margin:0;font-size:12px;line-height:1.5;overflow-wrap:anywhere;color:#e3d5db}
+.decoder-term code{display:block;margin-top:4px;color:#b6dcc7;font:12px/1.5 var(--mono);white-space:pre-wrap;overflow-wrap:anywhere}
+.decoder-steps,.decoder-notes{padding-left:21px;margin:7px 0 0;color:#e3d5db;font-size:12px;line-height:1.65}
+.decoder-steps li,.decoder-notes li{padding:2px 0}
+.assignment-decoder .decoder-example{margin-top:16px;border:1px solid #dbb97d44;border-radius:10px;background:#100c0f;overflow:hidden}
+.assignment-decoder .decoder-example summary,.assignment-decoder .decoder-example h4{padding:12px;margin:0;cursor:pointer;font-size:12px;color:var(--gold);background:#231920}
+.decoder-example-body{padding:12px}
+.decoder-code{margin:9px 0;padding:12px;background:#0b080a;border:1px solid var(--line);border-radius:8px;overflow-x:auto;white-space:pre;font:12px/1.6 var(--mono);color:#d9eee1;-webkit-overflow-scrolling:touch}
+.decoder-connection{padding-top:7px;color:#c4b4bd;font-size:12px!important}
+@media(max-width:480px){.decoder-term{grid-template-columns:1fr;gap:3px}.assignment-decoder{padding:11px!important}.decoder-code{font-size:11px}}

@@ -166,6 +166,37 @@
     roots.practice.querySelectorAll('[data-reopen-work]').forEach(button => button.onclick = () => openChallengeWork(button.dataset.reopenWork, false));
   }
 
+
+  // Teach assignment comprehension in the same challenge screen, not a
+  // separate navigation destination or an automatically inserted solution.
+  function renderTranslationLayer(challenge) {
+    const layer = challenge.translationLayer;
+    if (!layer) return '';
+    const glossary = layer.translationKey.map(item =>
+      '<div class="decoder-term"><dt>' + escapeHTML(item.jargon) + '</dt>' +
+      '<dd>' + escapeHTML(item.concept) + '<code>' + escapeHTML(item.syntax) + '</code></dd></div>'
+    ).join('');
+    const steps = layer.steps.map(step => '<li>' + escapeHTML(step) + '</li>').join('');
+    const notes = layer.parallelExample.lineNotes.map(note => '<li>' + escapeHTML(note) + '</li>').join('');
+    const worked = '<div class="decoder-example-body">' +
+      '<p>' + escapeHTML(layer.parallelExample.topic) + '</p>' +
+      '<pre class="decoder-code"><code>' + escapeHTML(layer.parallelExample.code) + '</code></pre>' +
+      '<ol class="decoder-notes">' + notes + '</ol>' +
+      '<p class="decoder-connection">' + escapeHTML(layer.parallelExample.connection) + '</p>' +
+      '</div>';
+    const example = layer.scaffoldMode === 'always_expanded'
+      ? '<div class="decoder-example"><h4>Worked parallel example — not the assignment answer</h4>' + worked + '</div>'
+      : '<details class="decoder-example"><summary>Show worked parallel example — not the assignment answer</summary>' + worked + '</details>';
+    return '<section class="practice-section assignment-decoder" aria-label="Assignment Decoder">' +
+      '<h3>Assignment Decoder</h3>' +
+      '<p class="decoder-intro">Understand the assignment before coding. The original instructions above remain authoritative.</p>' +
+      '<h4>In plain English</h4><p>' + escapeHTML(layer.plainEnglish) + '</p>' +
+      '<h4>Translate the technical language</h4><p>' + escapeHTML(layer.academicJargon) + '</p>' +
+      '<dl class="decoder-glossary">' + glossary + '</dl>' +
+      '<h4>Steps to plan (not a solution)</h4><ol class="decoder-steps">' + steps + '</ol>' +
+      example + '</section>';
+  }
+
   function renderChallengeDetail(challenge) {
     const rec = getRecord(challenge.id);
     const last = rec.lastCheck;
@@ -190,6 +221,7 @@
     return '<section class="practice-detail">' +
       '<div class="challenge-top"><div><button type="button" class="tiny quiet" id="practiceBack">← All challenges</button><div class="learning-kicker" style="margin-top:10px">CS50P Foundations</div><h2>' + escapeHTML(challenge.title) + '</h2></div>' + statusPill(rec.status) + '</div>' +
       '<div class="practice-section"><h3>Challenge</h3><p>' + escapeHTML(challenge.instructions) + '</p></div>' +
+      renderTranslationLayer(challenge) +
       '<div class="practice-section"><h3>What You Are Practicing</h3><p>' + escapeHTML(challenge.practice) + '</p><div class="challenge-concepts" style="margin-top:8px">' + challenge.concepts.map(x => '<span>' + escapeHTML(x) + '</span>').join('') + '</div></div>' +
       '<div class="practice-section"><h3>Example</h3><div class="practice-example"><pre>Input\\n' + escapeHTML(challenge.exampleInput.join('\\n')) + '</pre><pre>Expected behavior\\n' + escapeHTML(challenge.expectedBehavior) + '</pre></div></div>' +
       '<div class="practice-section"><div class="learning-actions">' +
